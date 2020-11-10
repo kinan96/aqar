@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1034007058497",
+    "firebase_url": "https://aqar-f77df.firebaseio.com",
+    "project_id": "aqar-f77df",
+    "storage_bucket": "aqar-f77df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034007058497:android:bc0b71b4446c5b1ca6cec0",
+        "android_client_info": {
+          "package_name": "com.aqar.aqar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1034007058497-6ets7od7mou2s7k2kgmjvrsekjd20bil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqoO2f8OM-vZralaWZP984gAijcyPtcIM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1034007058497-6ets7od7mou2s7k2kgmjvrsekjd20bil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
