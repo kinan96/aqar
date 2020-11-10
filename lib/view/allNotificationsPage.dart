@@ -116,7 +116,7 @@ class NotificationsWidget extends StatefulWidget {
 class _NotificationsWidgetState extends State<NotificationsWidget> {
   @override
   void initState() {
-    _getNotifications();
+    // _getNotifications();
     super.initState();
   }
 
@@ -125,22 +125,23 @@ class _NotificationsWidgetState extends State<NotificationsWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<int>(
-        stream: notificationController.unReadNotificationsStream,
-        initialData: 0,
-        builder: (context, snapshot) {
-          return IconButton(
-              icon: (snapshot.hasData && snapshot.data > 0)
-                  ? Icon(Icons.notifications_active,color: Colors.white,)
-                  :  Icon(Icons.notifications_none,color: Colors.white,),
-              onPressed: () {
-                              if(userController.userModel==null)
-              showModalBottomSheet(context: context, builder:(context)=>PleaseSignUp());
-              else
+    return SizedBox();
+    // StreamBuilder<int>(
+    //     stream: notificationController.unReadNotificationsStream,
+    //     initialData: 0,
+    //     builder: (context, snapshot) {
+    //       return IconButton(
+    //           icon: (snapshot.hasData && snapshot.data > 0)
+    //               ? Icon(Icons.notifications_active,color: Colors.white,)
+    //               :  Icon(Icons.notifications_none,color: Colors.white,),
+    //           onPressed: () {
+    //                           if(userController.userModel==null)
+    //           showModalBottomSheet(context: context, builder:(context)=>PleaseSignUp());
+    //           else
 
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => AllNotificationsPage()));
-              });
-        });
+    //             Navigator.of(context).push(MaterialPageRoute(
+    //                 builder: (context) => AllNotificationsPage()));
+    //           });
+    //     });
   }
 }

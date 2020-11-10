@@ -11,28 +11,28 @@ class HomeBodyController{
   List<CategoryModel>categories=[];
  Future<List> search({GlobalKey<ScaffoldState>sc,String title,int cityId,String sort,int skip}) async {
     // try {
-      String _url="$baseUrl/ad?title=${title!=null?title.trim():""}&city_id=${(cityId==null||cityId==0)?"":cityId}&sort=${(sort==null||sort=="all")?"":sort}";
-       print(_url);
-              List<AdModel>_adResult=[];
-      Response response = await Dio().get(_url,
-          options: Options(
-            headers: {"skip":skip},
-              receiveDataWhenStatusError: true, validateStatus: (i) => true),
-          onReceiveProgress: (sent,total){
-            progressRatio.changeprogressRatio("${(sent/total*100).toStringAsFixed(0)}");
-          });
-      if (response.data['status'] == 200) {
-               print(response.data);
-for(Map<String,dynamic>ad in response.data['data'])
-_adResult.add(AdModel.fromJson(ad));
-return [int.tryParse(response.data['data_count'].toString())??0,_adResult];
-      } else if (response.data['status'] == 400) {
-        if(sc!=null)
-        sc.currentState.showSnackBar(SnackBar(content: Text(response.data['msg'].toString())));
-;
-      } else if (response.data['status'] == 401) {
-        await removeSharedOfKey("savedUser");
-      }
+//       String _url="$baseUrl/ad?title=${title!=null?title.trim():""}&city_id=${(cityId==null||cityId==0)?"":cityId}&sort=${(sort==null||sort=="all")?"":sort}";
+//        print(_url);
+//               List<AdModel>_adResult=[];
+//       Response response = await Dio().get(_url,
+//           options: Options(
+//             headers: {"skip":skip},
+//               receiveDataWhenStatusError: true, validateStatus: (i) => true),
+//           onReceiveProgress: (sent,total){
+//             progressRatio.changeprogressRatio("${(sent/total*100).toStringAsFixed(0)}");
+//           });
+//       if (response.data['status'] == 200) {
+//                print(response.data);
+// for(Map<String,dynamic>ad in response.data['data'])
+// _adResult.add(AdModel.fromJson(ad));
+// return [int.tryParse(response.data['data_count'].toString())??0,_adResult];
+//       } else if (response.data['status'] == 400) {
+//         if(sc!=null)
+//         sc.currentState.showSnackBar(SnackBar(content: Text(response.data['msg'].toString())));
+// ;
+//       } else if (response.data['status'] == 401) {
+//         await removeSharedOfKey("savedUser");
+//       }
    return [0,[]];
     // } catch (e) {
     //   print(e.toString());

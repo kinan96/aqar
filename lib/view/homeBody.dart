@@ -213,7 +213,7 @@ Marker homeMarker(
         adModel != null ? LatLng(adModel.lat, adModel.lng) : cityModel.latLng,
     builder: (ctx) => InkWell(
       onTap:adModel!=null?(){
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>AdPage(adModel: adModel,)));
+        // Navigator.push(context,MaterialPageRoute(builder: (context)=>AdPage(adModel: adModel,)));
       }: onPressed,
       child: Container(
           alignment: Alignment.center,

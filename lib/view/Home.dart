@@ -29,15 +29,15 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-    _getCities() async {
-        searchBodyController.changebackToCities(false);
+  _getCities() async {
+    searchBodyController.changebackToCities(false);
     searchBodyController.changeloading(true);
     List<CityModel> _city = await userController.getListOfCites(_scaffold);
 
     if (mounted) if (_city != null && _city.length > 0)
       setState(() {
         searchBodyController.changeloading(false);
-   List<Marker>     _markers = List.generate(
+        List<Marker> _markers = List.generate(
             _city.length,
             (index) => homeMarker(
                 cityModel: _city[index],
@@ -54,25 +54,24 @@ class _HomeState extends State<Home> {
                     });
                   List ads = await homeBodyController.search(
                       cityId: _city[index].id, sc: _scaffold);
-                      searchBodyController.changeloading(false);
-                 List<Marker>   _markers = List.generate(
-                        ads[1].length,
-                        (index) => homeMarker(
-                            adModel: ads[1][index],
-                            connect: true,
-                            context: context,
-                            hasStatus: false,
-                            onPressed: () async {}));
-                    searchBodyController
-                        .changesearchedListOfAdMarkers(_markers);
+                  searchBodyController.changeloading(false);
+                  List<Marker> _markers = List.generate(
+                      ads[1].length,
+                      (index) => homeMarker(
+                          adModel: ads[1][index],
+                          connect: true,
+                          context: context,
+                          hasStatus: false,
+                          onPressed: () async {}));
+                  searchBodyController.changesearchedListOfAdMarkers(_markers);
                 }));
-                searchBodyController.changesearchedListOfAdMarkers(_markers);
-                                      searchBodyController.changebackToCities(false);
+        searchBodyController.changesearchedListOfAdMarkers(_markers);
+        searchBodyController.changebackToCities(false);
       });
   }
 
   initState() {
-                searchBodyController.changebackToCities(false);
+    searchBodyController.changebackToCities(false);
     searchBodyController.changeloading(false);
     _pageController = PageController(initialPage: widget.index ?? 0);
     _pageIndex = widget.index ?? 0;
@@ -177,8 +176,9 @@ class _HomeState extends State<Home> {
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
-                              onTap: (){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AllAdsPage()));
+                              onTap: () {
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (context) => AllAdsPage()));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),
@@ -235,12 +235,12 @@ class _HomeState extends State<Home> {
                                 Expanded(
                                     child: RaisedButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => AddAdPage(
-                                                  type: "land",
-                                                )));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => AddAdPage(
+                                    //               type: "land",
+                                    //             )));
                                   },
                                   child: Column(
                                     children: [
@@ -263,12 +263,12 @@ class _HomeState extends State<Home> {
                                 Expanded(
                                     child: RaisedButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => AddAdPage(
-                                                  type: "Property",
-                                                )));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) => AddAdPage(
+                                    //               type: "Property",
+                                    //             )));
                                   },
                                   child: Column(
                                     children: [
@@ -277,7 +277,8 @@ class _HomeState extends State<Home> {
                                         height: 5,
                                       ),
                                       Text(
-                                        "Vella or Apartment",
+                                        "Vella/Apartment",
+                                        textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16),
@@ -310,7 +311,7 @@ class _HomeState extends State<Home> {
                 CustomBottomNavigationBarItem(
                   imageAsset: 'assets/images/home.png',
                   index: 0,
-                  onTap: ()async {
+                  onTap: () async {
                     setState(() {
                       homeController.changeSelectedBNBItem(0);
                       _pageIndex = 0;
@@ -328,26 +329,6 @@ class _HomeState extends State<Home> {
                     });
                   },
                 ),
-                // CustomBottomNavigationBarItem(
-                //   imageAsset: 'assets/images/profile.png',
-                //   index: 2,
-                //   onTap: () {
-                //     setState(() {
-                //       homeController.changeSelectedBNBItem(2);
-                //       _pageIndex = 2;
-                //     });
-                //   },
-                // ),
-                // CustomBottomNavigationBarItem(
-                //   imageAsset: 'assets/images/more.png',
-                //   index: 3,
-                //   onTap: () {
-                //     setState(() {
-                //       homeController.changeSelectedBNBItem(3);
-                //       _pageIndex = 3;
-                //     });
-                //   },
-                // ),
               ],
             ),
           )),
@@ -395,7 +376,7 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AllAdsPage()));
+              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AllAdsPage()));
             },
           ),
           ListTile(
@@ -429,12 +410,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddAdPage(
-                                                type: "land",
-                                              )));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => AddAdPage(
+                                  //               type: "land",
+                                  //             )));
                                 },
                                 child: Column(
                                   children: [
@@ -457,12 +438,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => AddAdPage(
-                                                type: "Property",
-                                              )));
+                                  // Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => AddAdPage(
+                                  //               type: "Property",
+                                  //             )));
                                 },
                                 child: Column(
                                   children: [
@@ -471,7 +452,8 @@ class CustomDrawer extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Vella or Apartment",
+                                      "Vella/Apartment",
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16),
@@ -494,20 +476,20 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ProfileBody()));
+              // Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => ProfileBody()));
             },
           ),
-                    ListTile(
-            leading: Icon(Icons.favorite, color: Colors.lightBlue),
-            title: Text(
-              'Favourite Properties',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FavouriteAds()));
-            },
-          ),
+          //           ListTile(
+          //   leading: Icon(Icons.favorite, color: Colors.lightBlue),
+          //   title: Text(
+          //     'Favourite Properties',
+          //     style: TextStyle(fontWeight: FontWeight.bold),
+          //   ),
+          //   onTap: () {
+          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FavouriteAds()));
+          //   },
+          // ),
           ListTile(
             leading: Icon(Icons.lock_outline, color: Colors.lightBlue),
             title: Text(
