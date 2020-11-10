@@ -1,26 +1,19 @@
-import 'dart:io';
-import 'dart:math';
 import 'package:aqar/controller/baseUrl.dart';
 import 'package:aqar/controller/base_url.dart';
 import 'package:aqar/controller/shared_preferences_helper.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
-import 'package:aqar/view/changePassword.dart';
 import 'package:aqar/view/confirm.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:aqar/view/splash.dart';
 import 'package:dio/dio.dart';
-import 'package:filesize/filesize.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rich_alert/rich_alert.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
+import 'homeController.dart';
 class UserController {
   BehaviorSubject<UserModel> _userModel = BehaviorSubject<UserModel>();
   Function(UserModel) get changeuserModel => _userModel.sink.add;
@@ -143,9 +136,7 @@ sc.currentState.showSnackBar(SnackBar(content: Text("${response.data['message']}
         userController.changeuserModel(model);
       print("$model ------------ $savedUser");
         if (changePassword != null)
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) => ChangePassword()));
-        else {
+{}        else {
  Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => Home()));
         }
@@ -381,41 +372,6 @@ SizedBox(width: 10,),
 
 
 
-//   Future<UserModel> getProfile(BuildContext context,int id) async {
-//     UserModel userModel;
-//     progressRatio.changeprogressRatio("0.0");
-//     // showLoadingContext(context);
-//     try {
-//       Response response = await Dio().get("$baseUrl/user/$id",
-//       options: Options(
-//         headers: {
-//             "Authorization": "Bearer${userController.userModel.apiToken}"
-//           },
-//       ),
-//      );
-// print(response.data);
-//       if (response.data['status'] == 200) {
-// userModel =UserModel.fromJson(response);
-// return userModel;
-//       } else if(response.data['status']==400) {      Navigator.pop(context);
-
-//         showMSG(context, "خطأ", response.data['message'],
-//             richAlertType: RichAlertType.ERROR);
-//       }
-//       else{
-//                   await removeSharedOfKey("savedUser");
-//         Navigator.of(context)
-//             .pushReplacement(MaterialPageRoute(builder: (context) => Splash()));
-
-//       }
-//       return userModel;
-//     } catch (e) {
-//       Navigator.pop(context);
-//     }
-//   }
-
-
-
   Future<bool> updateProfile(BuildContext context,FormData data,int id) async {
                 progressRatio.changeprogressRatio("0.0");
     showLoadingContext(context);
@@ -497,66 +453,4 @@ SizedBox(width: 10,),
       Navigator.pop(context);
     }
   }
-
-  // Future uploadAttachment(BuildContext context,File file,String type) async {
-  //               progressRatio.changeprogressRatio("0.0");
-  //   showLoadingContext(context);
-  //  try {
-  //  MultipartFile file1=   await MultipartFile.fromFile(file.path,
-  //               filename: file.path.split('/').last.split(".").first);
-  //     Response response = await Dio().post("$baseUrl/user/upload_attachment",
-  //         data: FormData.fromMap({
-  //           "attachment":file1,
-  //           "type":filesize(file.lengthSync()).toString()
-  //         }),
-  //         options: Options(headers: {
-  //           "Authorization": "Bearer${userController.userModel.apiToken}"
-  //         }, validateStatus: (s) => true, receiveDataWhenStatusError: true),
-  //         onSendProgress: (sent,total){
-  //           progressRatio.changeprogressRatio("${(sent/total*100).toStringAsFixed(0)}");
-  //         });
-  //     if (response.data['status'] == 200) {
-  //       Navigator.pop(context);
-  //       print(response.data);
-  //       UserModel model = UserModel.fromJson(response);
-
-  //         userController.changeuserModel(model);
-  //     } else if (response.data['status'] == 400) {      Navigator.pop(context);
-
-  //       showMSG(context, "رسالة إدارية", response.data['message'],
-  //           richAlertType: RichAlertType.WARNING);
-  //     } else if (response.data['status'] == 401) {
-  //       await removeSharedOfKey("savedUser");
-  //       await logOut(context);
-  //     }
-  //   } catch (e) {Navigator.pop(context);} 
-  //    }
-
-  // Future removeAttatchment(BuildContext context,int id) async {
-  //  progressRatio.changeprogressRatio("0.0");
-  //   showLoadingContext(context);
-  //  try {
-  //     Response response = await Dio().post("$baseUrl/user/remove_attachment",
-  //         data:{"id":id.toString()},
-  //         options: Options(headers: {
-  //           "Authorization": "Bearer${userController.userModel.apiToken}"
-  //         }, validateStatus: (s) => true, receiveDataWhenStatusError: true),
-  //         onSendProgress: (sent,total){
-  //           progressRatio.changeprogressRatio("${(sent/total*100).toStringAsFixed(0)}");
-  //         });
-  //     if (response.data['status'] == 200) {
-  //       Navigator.pop(context);
-  //       print(response.data);
-  //       UserModel model = UserModel.fromJson(response);
-
-  //         userController.changeuserModel(model);
-  //     } else if (response.data['status'] == 400) {      Navigator.pop(context);
-
-  //       showMSG(context, "رسالة إدارية", response.data['message'],
-  //           richAlertType: RichAlertType.WARNING);
-  //     } else if (response.data['status'] == 401) {
-  //       await removeSharedOfKey("savedUser");
-  //       await logOut(context);
-  //     }
-  //   } catch (e) {Navigator.pop(context);} }
     }

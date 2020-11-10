@@ -1,25 +1,13 @@
 import 'package:aqar/controller/baseUrl.dart';
-import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
-import 'package:aqar/model/categoryModel.dart';
 import 'package:aqar/model/userModel.dart';
-import 'package:aqar/view/allAdsPage.dart';
-import 'package:aqar/view/chat.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:aqar/view/favouriteAds.dart';
 import 'package:aqar/view/homeBody.dart';
-import 'package:aqar/view/moreBody.dart';
-import 'package:aqar/view/pleaseSignUp.dart';
-import 'package:aqar/view/pleaseSignUpBody.dart';
-import 'package:aqar/view/profileBody.dart';
-import 'package:aqar/view/searchBody.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:rich_alert/rich_alert.dart';
-import 'addAdPage.dart';
-import 'allNotificationsPage.dart';
 
 class Home extends StatefulWidget {
   int index;
@@ -45,25 +33,6 @@ class _HomeState extends State<Home> {
                 context: context,
                 hasStatus: false,
                 onPressed: () async {
-                  searchBodyController
-                      .changesearchCityIdFilter(_city[index].id);
-                  if (mounted)
-                    setState(() {
-                      searchBodyController.changeloading(true);
-                      searchBodyController.changebackToCities(true);
-                    });
-                  List ads = await homeBodyController.search(
-                      cityId: _city[index].id, sc: _scaffold);
-                  searchBodyController.changeloading(false);
-                  List<Marker> _markers = List.generate(
-                      ads[1].length,
-                      (index) => homeMarker(
-                          adModel: ads[1][index],
-                          connect: true,
-                          context: context,
-                          hasStatus: false,
-                          onPressed: () async {}));
-                  searchBodyController.changesearchedListOfAdMarkers(_markers);
                 }));
         searchBodyController.changesearchedListOfAdMarkers(_markers);
         searchBodyController.changebackToCities(false);
@@ -147,38 +116,17 @@ class _HomeState extends State<Home> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
                       ),
-                      Spacer(),
-                      NotificationsWidget()
                     ],
                   ),
                   _pageIndex == 0
                       ? CustomTextFormField(
                           controller: _searchCTL,
                           onSaved: (v) async {
-                            searchBodyController.changeloading(true);
-                            List ads = await homeBodyController.search(
-                                cityId: searchBodyController.searchCityIdFilter,
-                                title: _searchCTL.text,
-                                sc: _scaffold);
-                            searchBodyController.changeloading(false);
-                            searchBodyController.changebackToCities(true);
-                            List<Marker> _markers = List.generate(
-                                ads[1].length,
-                                (index) => homeMarker(
-                                    adModel: ads[1][index],
-                                    connect: true,
-                                    context: context,
-                                    hasStatus: false,
-                                    onPressed: () async {}));
-                            searchBodyController
-                                .changesearchedListOfAdMarkers(_markers);
                           },
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
                               onTap: () {
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (context) => AllAdsPage()));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),
@@ -203,7 +151,7 @@ class _HomeState extends State<Home> {
                     return HomeBody();
                     break;
                   case 1:
-                    return AllChats();
+                    return Scaffold();
                     break;
 
                   default:
@@ -212,10 +160,6 @@ class _HomeState extends State<Home> {
               }),
           floatingActionButton: FloatingActionButton(
               onPressed: () {
-                if (userController.userModel == null)
-                  showModalBottomSheet(
-                      context: context, builder: (context) => PleaseSignUp());
-                else
                   _scaffold.currentState.showBottomSheet((context) => Container(
                         width: MediaQuery.of(context).size.width,
                         padding: EdgeInsets.all(20),
@@ -235,12 +179,6 @@ class _HomeState extends State<Home> {
                                 Expanded(
                                     child: RaisedButton(
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => AddAdPage(
-                                    //               type: "land",
-                                    //             )));
                                   },
                                   child: Column(
                                     children: [
@@ -263,12 +201,6 @@ class _HomeState extends State<Home> {
                                 Expanded(
                                     child: RaisedButton(
                                   onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => AddAdPage(
-                                    //               type: "Property",
-                                    //             )));
                                   },
                                   child: Column(
                                     children: [
@@ -291,7 +223,6 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                       ));
-                // Navigator.push(context,MaterialPageRoute(builder: (context)=>AddAdPage()));
               },
               child: Container(
                   padding: EdgeInsets.all(5),
@@ -358,7 +289,6 @@ class CustomDrawer extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     child: Image.asset(
                       'assets/images/logo.png',
-                      // width: MediaQuery.of(context).size.width / 2,
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -376,7 +306,6 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AllAdsPage()));
             },
           ),
           ListTile(
@@ -386,10 +315,7 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              if (userController.userModel == null)
-                showModalBottomSheet(
-                    context: context, builder: (context) => PleaseSignUp());
-              else {
+               {
                 Navigator.pop(context);
                 scaffold.currentState.showBottomSheet((context) => Container(
                       width: MediaQuery.of(context).size.width,
@@ -410,12 +336,6 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => AddAdPage(
-                                  //               type: "land",
-                                  //             )));
                                 },
                                 child: Column(
                                   children: [
@@ -438,12 +358,6 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => AddAdPage(
-                                  //               type: "Property",
-                                  //             )));
                                 },
                                 child: Column(
                                   children: [
@@ -476,20 +390,8 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => ProfileBody()));
             },
           ),
-          //           ListTile(
-          //   leading: Icon(Icons.favorite, color: Colors.lightBlue),
-          //   title: Text(
-          //     'Favourite Properties',
-          //     style: TextStyle(fontWeight: FontWeight.bold),
-          //   ),
-          //   onTap: () {
-          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FavouriteAds()));
-          //   },
-          // ),
           ListTile(
             leading: Icon(Icons.lock_outline, color: Colors.lightBlue),
             title: Text(

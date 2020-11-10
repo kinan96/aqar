@@ -4,7 +4,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'view/splash.dart';
 void main() {
-    WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 

@@ -1,7 +1,4 @@
 import 'package:aqar/view/homeBody.dart';
-import 'package:aqar/view/moreBody.dart';
-import 'package:aqar/view/profileBody.dart';
-import 'package:aqar/view/searchBody.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -18,12 +15,6 @@ class HomeController{
     switch (index) {
 
       case 0:return HomeBody();
-      break;
-      case 1:return SearchBody();
-      break;
-      case 2:return ProfileBody();
-      break;
-      case 3:return MoreBody();
       break;
 
       default:return HomeBody();

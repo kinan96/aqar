@@ -1,4 +1,3 @@
-import 'package:aqar/controller/signInController.dart';
 import 'package:aqar/controller/signUpController.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';

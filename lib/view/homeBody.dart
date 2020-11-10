@@ -1,13 +1,7 @@
-import 'package:aqar/controller/adController.dart';
-import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
-import 'package:aqar/model/adModel.dart';
-import 'package:aqar/model/categoryModel.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
-import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -41,30 +35,7 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 context: context,
                 hasStatus: false,
                 onPressed: () async {
-                  searchBodyController
-                      .changesearchCityIdFilter(_city[index].id);
-                  _mapController.move(_city[index].latLng, 5);
-                  if (mounted)
-                    setState(() {
-                      _markers = [];
-                      searchBodyController.changeloading(true);
-                      searchBodyController.changebackToCities(true);
-                    });
-                  List ads = await homeBodyController.search(
-                      cityId: _city[index].id, sc: _sc);
-                      searchBodyController.changeloading(false);
-                  setState(() {
-                    _markers = List.generate(
-                        ads[1].length,
-                        (index) => homeMarker(
-                            adModel: ads[1][index],
-                            connect: true,
-                            context: context,
-                            hasStatus: false,
-                            onPressed: () async {}));
-                    searchBodyController
-                        .changesearchedListOfAdMarkers(_markers);
-                  });
+                
                 }));
                 searchBodyController.changesearchedListOfAdMarkers(_markers);
                                       searchBodyController.changebackToCities(false);
@@ -201,7 +172,6 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
 
 Marker homeMarker(
     {CityModel cityModel,
-    AdModel adModel,
     Function onPressed,
     bool connect,
     bool hasStatus,
@@ -210,16 +180,14 @@ Marker homeMarker(
     width: 50,
     height: 50,
     point:
-        adModel != null ? LatLng(adModel.lat, adModel.lng) : cityModel.latLng,
+      cityModel.latLng,
     builder: (ctx) => InkWell(
-      onTap:adModel!=null?(){
-        // Navigator.push(context,MaterialPageRoute(builder: (context)=>AdPage(adModel: adModel,)));
-      }: onPressed,
+      onTap: onPressed,
       child: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.all(5),
           child: Text(
-            adModel != null ? "${adModel.price} R.S" : cityModel.name,
+          cityModel.name,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Colors.deepPurple[900],
@@ -233,140 +201,5 @@ Marker homeMarker(
           )),
     ),
   );
-}
-
-class CustomAdCard extends StatelessWidget {
-  AdModel adModel;
-  CustomAdCard({
-    this.adModel,
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      height: MediaQuery.of(context).size.width / 3 - 10,
-      decoration: BoxDecoration(
-        color: appDesign.white,
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AdPage(
-                        adModel: adModel,
-                      )));
-        },
-        borderRadius: BorderRadius.all(Radius.circular(15)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              child: ExtendedImage(
-                enableLoadState: true,
-                image: NetworkImage(
-                  adModel != null
-                      ? adModel.image != null
-                          ? adModel.image
-                          : adModel.images.first
-                      : "https://cdn.wallpapersafari.com/35/57/5Qupky.png",
-                ),
-                width: MediaQuery.of(context).size.width / 3 - 10,
-                height: MediaQuery.of(context).size.width / 3 - 10,
-                fit: BoxFit.fill,
-              ),
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomText(
-                          adModel != null ? adModel.title : "",
-                          size: 20,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  CustomText(
-                    adModel != null ? adModel.username??"${adModel.user.firstName} ${adModel.user.lastName}" : "",
-                    size: 14,
-                    maxLines: 1,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              color: appDesign.hint,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              child: Text(
-                                adModel != null ? adModel.city.name : "",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: appDesign.hint,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            adModel != null ? adModel.price.toString() : "0.0",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
-                          ),
-                          Text(
-                            "R.S",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ))
-          ],
-        ),
-      ),
-    );
-  }
 }
 
