@@ -6,7 +6,7 @@ import 'package:aqar/controller/userController.dart';
 import 'package:dio/dio.dart';
 import 'package:latlong/latlong.dart';
 
-
+import 'adModel.dart';
 
 class Attachment {
   int id;
@@ -44,6 +44,7 @@ class UserModel {
       this.imageFile,
       this.type,
             this.userName,
+      this.ads,
       this.totalRating,
       this.apiToken});
 
@@ -63,6 +64,7 @@ class UserModel {
   String createdAt;
   String msg;
   String updatedAt;
+  List<AdModel>ads;
   double totalRating;
   String mobile;
   String email;
@@ -74,6 +76,12 @@ class UserModel {
       );
   factory UserModel.fromJson(Response json) {
     print(json);
+    List<AdModel>_ads=[];
+    if(json.data['data']['ads']!=null)
+    {
+      for(Map<String,dynamic>ad in json.data['data']['ads'])
+      _ads.add(AdModel.fromJson(ad,card: true));
+    }
     return UserModel(
         id: json.data['data']["id"],
         firstName: json.data['data']["first_name"],
@@ -97,6 +105,7 @@ class UserModel {
         
         email: json.data['data']["email"],
         image: json.data['data']["image"],
+        ads:_ads,
         activationCode: json.data['data']["activation_code"] != null
             ? int.tryParse(json.data['data']["activation_code"].toString()) ??
                 null
@@ -109,6 +118,12 @@ class UserModel {
   }
 
   factory UserModel.fromMapModel(Map<String,dynamic> data) {
+    List<AdModel>_ads=[];
+    if(data['ads']!=null)
+    {
+      for(Map<String,dynamic>ad in data['ads'])
+      _ads.add(AdModel.fromJson(ad));
+    }
     return UserModel(
         id: data["id"],
         firstName: data["first_name"],
@@ -132,6 +147,7 @@ class UserModel {
         
         email: data["email"],
         image: data["image"],
+        ads:_ads,
         activationCode: data["activation_code"] != null
             ? int.tryParse(data["activation_code"].toString()) ??
                 null

@@ -1,11 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:aqar/controller/baseUrl.dart';
 import 'package:aqar/controller/shared_preferences_helper.dart';
-import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
-import 'package:aqar/view/Home.dart';
-import 'package:aqar/view/confirm.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,7 +22,6 @@ class _SplashState extends State<Splash> {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   @override
   void initState() {
-chooseScreen(widget.nav, true);
     super.initState();
   }
 
@@ -62,24 +57,14 @@ bool _stop=false;
     
       {Function onNotifi}) async {
 
-      // if(userController.userModel!=null||notificationController.fromBackGround!=null){}
-      // else{  
     List<String> userData;
-    if (true) userData = await getSharedListOfStringOfKey("savedUser");
+     userData = await getSharedListOfStringOfKey("savedUser");
     await _fcm_listener(_firebaseMessaging);
-    if (userData != null && true)
+    if (userData != null)
       await userController.signIn(nav.currentContext, userData[0], userData[1],
           open: true, onNotifi: onNotifi);
     else
     Navigator.pushReplacement(nav.currentContext, MaterialPageRoute(builder: (context)=>SignIn()));
-//       setState(() {
-//         _loading = false;
-//       });
-// if(mounted)
-//       setState(() {
-//         _stop=true;
-//       });
-      // }
   }
 
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
@@ -105,11 +90,16 @@ bool _stop=false;
                       SizedBox(
                         height: 100,
                       ),
-                                                Image.asset(
+                                                FutureBuilder(
+                                                  future: chooseScreen(widget.nav,true),
+                                                  builder: (context, snapshot) {
+                                                    return Image.asset(
                         'assets/images/logo.png',
                         width: MediaQuery.of(context).size.width / 2,
                         fit: BoxFit.fitWidth,
-                      ),
+                      );
+                                                  }
+                                                ),
 
 
 

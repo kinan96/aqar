@@ -1,13 +1,18 @@
 import 'package:aqar/controller/baseUrl.dart';
+import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
 import 'package:aqar/model/userModel.dart';
+import 'package:aqar/view/allAdsPage.dart';
 import 'package:aqar/view/customWidgets.dart';
+import 'package:aqar/view/editProfile.dart';
 import 'package:aqar/view/homeBody.dart';
+import 'package:aqar/view/myProperties.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:rich_alert/rich_alert.dart';
+import 'addAdPage.dart';
 
 class Home extends StatefulWidget {
   int index;
@@ -33,6 +38,25 @@ class _HomeState extends State<Home> {
                 context: context,
                 hasStatus: false,
                 onPressed: () async {
+                  searchBodyController
+                      .changesearchCityIdFilter(_city[index].id);
+                  if (mounted)
+                    setState(() {
+                      searchBodyController.changeloading(true);
+                      searchBodyController.changebackToCities(true);
+                    });
+                  List ads = await homeBodyController.search(
+                      cityId: _city[index].id, sc: _scaffold);
+                  searchBodyController.changeloading(false);
+                  List<Marker> _markers = List.generate(
+                      ads[1].length,
+                      (index) => homeMarker(
+                          adModel: ads[1][index],
+                          connect: true,
+                          context: context,
+                          hasStatus: false,
+                          onPressed: () async {}));
+                  searchBodyController.changesearchedListOfAdMarkers(_markers);
                 }));
         searchBodyController.changesearchedListOfAdMarkers(_markers);
         searchBodyController.changebackToCities(false);
@@ -122,11 +146,30 @@ class _HomeState extends State<Home> {
                       ? CustomTextFormField(
                           controller: _searchCTL,
                           onSaved: (v) async {
+                            searchBodyController.changeloading(true);
+                            List ads = await homeBodyController.search(
+                                cityId: searchBodyController.searchCityIdFilter,
+                                title: _searchCTL.text,
+                                sc: _scaffold);
+                            searchBodyController.changeloading(false);
+                            searchBodyController.changebackToCities(true);
+                            List<Marker> _markers = List.generate(
+                                ads[1].length,
+                                (index) => homeMarker(
+                                    adModel: ads[1][index],
+                                    connect: true,
+                                    context: context,
+                                    hasStatus: false,
+                                    onPressed: () async {}));
+                            searchBodyController
+                                .changesearchedListOfAdMarkers(_markers);
                           },
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
                               onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => AllAdsPage(title: "Filter",)));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),
@@ -160,69 +203,81 @@ class _HomeState extends State<Home> {
               }),
           floatingActionButton: FloatingActionButton(
               onPressed: () {
-                  _scaffold.currentState.showBottomSheet((context) => Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                "Choose Your Advertising Type",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
+                _scaffold.currentState.showBottomSheet((context) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "Choose Your Advertising Type",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: RaisedButton(
-                                  onPressed: () {
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.pin_drop),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "Land",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                                SizedBox(
-                                  width: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "land",
+                                              )));
+                                },
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.pin_drop),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Land",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(
-                                    child: RaisedButton(
-                                  onPressed: () {
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.business),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "Vella/Apartment",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                              ],
-                            )
-                          ],
-                        ),
-                      ));
+                              )),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                  child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Property",
+                                              )));
+                                },
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.business),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Vella/Apartment",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ))
+                            ],
+                          )
+                        ],
+                      ),
+                    ));
               },
               child: Container(
                   padding: EdgeInsets.all(5),
@@ -289,6 +344,7 @@ class CustomDrawer extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     child: Image.asset(
                       'assets/images/logo.png',
+                      // width: MediaQuery.of(context).size.width / 2,
                       fit: BoxFit.fitWidth,
                     ),
                   ),
@@ -300,22 +356,36 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: Icon(Icons.assignment_ind, color: Colors.lightBlue),
+            title: Text(
+              'My Properties',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MyProperties()));
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.crop_landscape, color: Colors.lightBlue),
             title: Text(
               'All Properties',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AllAdsPage(
+                        title: "All Properties",
+                      )));
             },
           ),
           ListTile(
-            leading: Icon(Icons.add, color: Colors.lightBlue),
-            title: Text(
-              'New Property',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-               {
+              leading: Icon(Icons.add, color: Colors.lightBlue),
+              title: Text(
+                'New Property',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
                 Navigator.pop(context);
                 scaffold.currentState.showBottomSheet((context) => Container(
                       width: MediaQuery.of(context).size.width,
@@ -336,6 +406,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "land",
+                                              )));
                                 },
                                 child: Column(
                                   children: [
@@ -358,6 +434,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Property",
+                                              )));
                                 },
                                 child: Column(
                                   children: [
@@ -380,9 +462,7 @@ class CustomDrawer extends StatelessWidget {
                         ],
                       ),
                     ));
-              }
-            },
-          ),
+              }),
           ListTile(
             leading: Icon(Icons.person, color: Colors.lightBlue),
             title: Text(
@@ -390,6 +470,8 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditProfile()));
             },
           ),
           ListTile(

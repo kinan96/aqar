@@ -1,10 +1,14 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:aqar/controller/adController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/validators.dart';
+import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
+import 'package:aqar/view/adOwnerPage.dart';
+import 'package:aqar/view/editProfile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -542,7 +546,7 @@ class TitleAndDiscripWidget extends StatelessWidget {
   String titleText;
   Color titleColor;
   Color discrepColor;
-IconData iconData;
+  IconData iconData;
   double heightSpace;
   double discripSize;
   FontWeight discripFontWeight;
@@ -576,10 +580,16 @@ IconData iconData;
             children: [
               Row(
                 children: [
-                  iconData!=null?Padding(
-                    padding: const EdgeInsets.only(bottom:5.0,right: 5),
-                    child: Icon(iconData,color: Colors.blue,size: 18,),
-                  ):SizedBox(),
+                  iconData != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, right: 5),
+                          child: Icon(
+                            iconData,
+                            color: Colors.blue,
+                            size: 18,
+                          ),
+                        )
+                      : SizedBox(),
                   Expanded(
                     child: titleWidget ??
                         Text(
@@ -760,6 +770,338 @@ class NormalSmallButton extends StatelessWidget {
   }
 }
 
+class CustomAdOwnerCard extends StatelessWidget {
+  bool adOwnerPage;
+  AdModel adModel;
+  int id;
+  CustomAdOwnerCard({
+    this.adOwnerPage,
+    this.id,
+    this.adModel,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      height: adOwnerPage != null
+          ? MediaQuery.of(context).size.width / 2
+          : MediaQuery.of(context).size.width / 3,
+      decoration: BoxDecoration(
+        color: appDesign.white,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(15)),
+                onTap: adOwnerPage != null
+                    ? null
+                    : () {
+                        userController.userModel != null &&
+                                userController.userModel != null &&
+                                userController.userModel.id == adModel.user.id
+                            ? Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => EditProfile()))
+                            : 
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AdOwnerPage(
+                                          adModel: adModel,
+                                        )));
+                      },
+                child: Image(
+                  image: NetworkImage(
+                    adModel.user.image,
+                  ),
+                  width: adOwnerPage != null
+                      ? MediaQuery.of(context).size.width / 3 - 10
+                      : MediaQuery.of(context).size.width / 3 - 10,
+                  height: adOwnerPage != null
+                      ? MediaQuery.of(context).size.width / 2 - 10
+                      : MediaQuery.of(context).size.width / 3 - 10,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomText(
+                    adModel.user.firstName + " " + adModel.user.lastName,
+                    size: 20,
+                    maxLines: 1,
+                  ),
+                  Spacer(),
+                  CustomText(
+                    adModel.user.mobile,
+                    size: 20,
+                    maxLines: 1,
+                  ),
+                  Spacer(),
+                  CustomText(
+                    adModel.user.email,
+                    size: 20,
+                    maxLines: 1,
+                  ),
+                  Spacer(),
+                ],
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RattingProfile extends StatelessWidget {
+  double rate;
+  double starSize;
+  RattingProfile({
+    this.rate,
+    this.starSize,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Localizations(
+      delegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      locale: Locale("en", "US"),
+      child: RatingBar(
+        onRatingUpdate: (r) {},
+        allowHalfRating: true,
+        glow: false,
+        ignoreGestures: true,
+        initialRating: rate,
+        itemCount: 5,
+        itemSize: starSize ?? 20,
+        unratedColor: appDesign.hint,
+        ratingWidget: RatingWidget(
+            full: Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            half: Icon(
+              Icons.star_half,
+              color: Colors.amber,
+            ),
+            empty: Icon(
+              Icons.star_border,
+              color: Colors.amber,
+            )),
+      ),
+    );
+  }
+}
+
+class CustomAdImageSlider extends StatefulWidget {
+  AdModel adModel;
+  List<Widget> images;
+  bool fav;
+  CustomAdImageSlider({
+    this.images,
+    this.fav,
+    this.adModel,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _CustomAdImageSliderState createState() => _CustomAdImageSliderState();
+}
+
+class _CustomAdImageSliderState extends State<CustomAdImageSlider> {
+  initState() {
+    _fav = widget.fav;
+    super.initState();
+  }
+
+  bool _fav;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height / 2,
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        overflow: Overflow.visible,
+        // alignment: Alignment.bottomCenter,
+        children: [
+          Positioned.fill(
+              child: widget.images == null
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: LoadingBouncingGrid.square(),
+                      ),
+                    )
+                  : CarouselSlider(
+                      items: widget.images,
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        enableInfiniteScroll: false,
+                        viewportFraction: 1,
+                        height: MediaQuery.of(context).size.height / 2,
+                        autoPlay: true,
+                        autoPlayAnimationDuration: Duration(seconds: 3),
+                      ),
+                    )),
+          Positioned(
+            bottom: -2,
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 25,
+              decoration: BoxDecoration(
+                  color: appDesign.white,
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(25))),
+            ),
+          ),
+          Positioned(
+              top: 0,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 10,
+                    right: 20,
+                    left: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    NormalSmallButton(
+                      icon: Icons.arrow_back_ios,
+                      justPop: true,
+                    ),
+                    widget.adModel == null
+                        ? SizedBox()
+                        : Row(
+                            children: [
+                              NormalSmallButton(
+                                icon: Icons.share,
+                                onPressed: () async {
+                                  if (widget.adModel != null) {
+                                    Share.share("${widget.adModel.title}\n${widget.adModel.note}\n${widget.adModel.price}\n${widget.adModel.city.name}\n${widget.adModel.district}\n${widget.adModel.street}\n${widget.adModel.user.mobile}\n${widget.adModel.user.email}");
+                                  }
+                                },
+                              ),
+                           
+                            ],
+                          )
+                  ],
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+}
+
+class PriceRow extends StatelessWidget {
+  String price;
+  PriceRow({
+    this.price,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Text(
+          price,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.end,
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+            fontSize: 27,
+          ),
+        ),
+        SizedBox(
+          width: 2,
+        ),
+        Text(
+          "R.S",
+          style: TextStyle(
+            color: Colors.blue,
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class AdHeaderDetails extends StatelessWidget {
+  String name;
+  String price;
+  String cat;
+  AdHeaderDetails({
+    this.name,
+    this.cat,
+    this.price,
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                  flex: 3,
+                  child: CustomText(
+                    "$name",
+                    size: 18,
+                    maxLines: 2,
+                  )),
+              PriceRow(
+                price: "$price",
+              )
+            ],
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: CustomText(
+                  "$cat",
+                  size: 15,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
 
 Future whenExitDialog(BuildContext context) {
   return showDialog(
@@ -770,7 +1112,7 @@ Future whenExitDialog(BuildContext context) {
           actions: [
             FlatButton(
                 child: Text(
-                  "Cancel",
+                  "إلغاء",
                   style: TextStyle(
                       color: appDesign.white, fontWeight: FontWeight.bold),
                 ),
@@ -783,7 +1125,7 @@ Future whenExitDialog(BuildContext context) {
             ),
             FlatButton(
                 child: Text(
-                  "Exit",
+                  "خروج",
                   style: TextStyle(
                       color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
@@ -792,8 +1134,8 @@ Future whenExitDialog(BuildContext context) {
                       .invokeMethod<void>('SystemNavigator.pop');
                 })
           ],
-          alertTitle: richTitle("Are you sure ?"),
-          alertSubtitle: richSubtitle(""),
+          alertTitle: richTitle("هل تريد الخروج من التطبيق ؟"),
+          alertSubtitle: richSubtitle("سيتم الخروج من التطبيق بمجرد الموافقة"),
           alertType: RichAlertType.WARNING,
         );
       });
@@ -845,3 +1187,84 @@ class FilterListTile extends StatelessWidget {
   }
 }
 
+class ImageViewer extends StatefulWidget {
+  List<String> images;
+  String title;
+  int position;
+  ImageViewer({this.images, this.position, this.title});
+  @override
+  _ImageViewerState createState() => _ImageViewerState();
+}
+
+class _ImageViewerState extends State<ImageViewer> {
+  PageController _pageController;
+  int _cuurentIndex;
+  @override
+  void initState() {
+    _pageController = PageController(initialPage: widget.position ?? 0);
+    _cuurentIndex = widget.position ?? 0;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context);
+        return Future.value(false);
+      },
+      child: Scaffold(
+        body: Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              Positioned.fill(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (i) {
+                    setState(() {
+                      _cuurentIndex = i;
+                    });
+                  },
+                  children: List.generate(
+                      widget.images.length,
+                      (index) =>
+                          Image(image: NetworkImage(widget.images[index]))),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(20),
+                  color: Colors.blue.withOpacity(0.2),
+                  child: Text(
+                    "${_cuurentIndex + 1} / ${widget.images.length}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.blue),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
