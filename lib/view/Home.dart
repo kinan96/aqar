@@ -168,8 +168,6 @@ class _HomeState extends State<Home> {
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => AllAdsPage(title: "Filter",)));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),

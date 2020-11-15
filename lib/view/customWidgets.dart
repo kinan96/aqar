@@ -191,7 +191,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               : TextDirection.ltr,
           minLines: 1,
           maxLines: widget.multiLine != null ? 6 : 1,
-          validator: widget.onValidate,
+          validator:emptyValidate,// widget.onValidate,
           keyboardType: widget.textInputType,
           textAlign: TextAlign.left,
           decoration: InputDecoration(

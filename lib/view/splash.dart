@@ -8,7 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 class Splash extends StatefulWidget {
   String title;
   GlobalKey<NavigatorState> nav;
@@ -28,7 +27,7 @@ class _SplashState extends State<Splash> {
   bool _loading = true;
   DateTime _now;
   DateTime _nextTime;
-bool _stop=false;
+  bool _stop = false;
   Future<bool> _onWillPop() async {
     if (_now == null) {
       if (mounted)
@@ -53,75 +52,49 @@ bool _stop=false;
     return Future.value(false);
   }
 
-  chooseScreen(GlobalKey<NavigatorState> nav, bool isOnline,
-    
-      {Function onNotifi}) async {
-
-    List<String> userData;
-     userData = await getSharedListOfStringOfKey("savedUser");
-    await _fcm_listener(_firebaseMessaging);
-    if (userData != null)
-      await userController.signIn(nav.currentContext, userData[0], userData[1],
-          open: true, onNotifi: onNotifi);
-    else
-    Navigator.pushReplacement(nav.currentContext, MaterialPageRoute(builder: (context)=>SignIn()));
-  }
 
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        key: _sc,
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: MediaQuery.of(context).padding.top + 100,
-                      ),
-                     
-                      SizedBox(
-                        height: 100,
-                      ),
-                                                FutureBuilder(
-                                                  future: chooseScreen(widget.nav,true),
-                                                  builder: (context, snapshot) {
-                                                    return Image.asset(
-                        'assets/images/logo.png',
-                        width: MediaQuery.of(context).size.width / 2,
-                        fit: BoxFit.fitWidth,
-                      );
-                                                  }
-                                                ),
-
-
-
-
-                    ],
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            key: _sc,
+            body: Stack(children: [
+              Positioned.fill(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.top + 100,
+                        ),
+                        SizedBox(
+                          height: 100,
+                        ),
+                           Image.asset(
+                                'assets/images/logo.png',
+                                width: MediaQuery.of(context).size.width / 2,
+                                fit: BoxFit.fitWidth,
+                           )
+                         
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-    ])))
-
-
-    ;
+            ])));
   }
 }
 
 //////////////////////////////////////////////////////////
 
-
-
-Future _fcm_listener(FirebaseMessaging _firebaseMessaging,
-  ) async {
+Future fcm_listener(
+  FirebaseMessaging _firebaseMessaging,
+      GlobalKey<NavigatorState> nav
+) async {
   if (Platform.isIOS) ios_permission(_firebaseMessaging);
   _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async =>
@@ -131,12 +104,20 @@ Future _fcm_listener(FirebaseMessaging _firebaseMessaging,
       onResume: (Map<String, dynamic> message) async =>
           onPushNotification(message),
       onBackgroundMessage: Platform.isIOS ? null : onBackGroundNotification);
-  await _firebaseMessaging.getToken().then((String token) {
+  await _firebaseMessaging.getToken().then((String token) async {
     assert(token != null);
     deviceInfo.changedeviceId(token);
     deviceInfo.changeplateform(Platform.operatingSystem);
     print("Push Messaging token: $token/////${Platform.operatingSystem}");
-  });
+
+    List<String> userData;
+    userData = await getSharedListOfStringOfKey("savedUser");
+    if (userData != null){
+      await userController.signIn(
+          nav.currentContext, userData[0], userData[1],
+          );
+    
+    }  });
   _firebaseMessaging.subscribeToTopic("matchscore");
 }
 
@@ -153,10 +134,10 @@ void ios_permission(FirebaseMessaging _firebaseMessaging) {
   ///
 }
 
-Future<dynamic> onPushNotification(Map<String, dynamic> message,
-    ) async {
+Future<dynamic> onPushNotification(
+  Map<String, dynamic> message,
+) async {
   print("--- $message");
-
 }
 
 Future<dynamic> onBackGroundNotification(Map<String, dynamic> message) async {

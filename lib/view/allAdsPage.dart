@@ -31,8 +31,6 @@ class _AllAdsPageState extends State<AllAdsPage> {
     }
   }
 
-  String _type = "";
-  String _socialType = "";
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
   List<Widget> _allAds = [];
   List<AdModel> _ads;
@@ -54,70 +52,7 @@ class _AllAdsPageState extends State<AllAdsPage> {
                     )
                   : Column(
                       children: [
-                        CustomText("Filters :"),
-                        Container(
-                          height: 150,
-                          padding: EdgeInsets.all(10),
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                                   Container(
-                          width: MediaQuery.of(context).size.width/2,
-                          child: Column(
-                            children: [
-                              CustomText("Type"),
-                              RadioListTile(
-                                  value: "Rent",
-                                  groupValue: _type,
-                                  title: Text("Rent"),
-                                  onChanged: (t) {
-                                    setState(() {
-                                      _type = t;
-                                    });
-                                  }),
-                              RadioListTile(
-                                  value: "Own",
-                                  groupValue: _type,
-                                  title: Text("Own"),
-                                  onChanged: (t) {
-                                    setState(() {
-                                      _type = t;
-                                    });
-                                  }),
-                            ],
-                          ),
-                        ),/////// 
-                           Container(
-                          width: MediaQuery.of(context).size.width/2,
-                          child: Column(
-                            children: [
-                              CustomText("Family or Single"),
-                              RadioListTile(
-                                  value: "Family",
-                                  groupValue: _socialType,
-                                  title: Text("Family"),
-                                  onChanged: (t) {
-                                    setState(() {
-                                      _socialType = t;
-                                    });
-                                  }),
-                              RadioListTile(
-                                  value: "Single",
-                                  groupValue: _socialType,
-                                  title: Text("Single"),
-                                  onChanged: (t) {
-                                    setState(() {
-                                      _socialType = t;
-                                    });
-                                  }),
-                            ],
-                          ),
-                        ),/////// 
-                        
-                          ],
-                          ),
-                        ),
+                       
                    
                         Expanded(
                           child: ListView.separated(

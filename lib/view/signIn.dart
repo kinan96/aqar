@@ -1,17 +1,31 @@
+import 'package:aqar/controller/shared_preferences_helper.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/signUp.dart';
+import 'package:aqar/view/splash.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
+    GlobalKey<NavigatorState> nav;
+    SignIn({this.nav});
   @override
   _SignInState createState() => _SignInState();
 }
 
 class _SignInState extends State<SignIn> {
+    FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  initState(){
+    _chooseScreen();
+    super.initState();
+  }
+  _chooseScreen()async{
+    await fcm_listener(_firebaseMessaging, widget.nav);
+  }
   String _email;
   String _password;
   bool _passVisible = false;
