@@ -1112,7 +1112,7 @@ Future whenExitDialog(BuildContext context) {
           actions: [
             FlatButton(
                 child: Text(
-                  "إلغاء",
+                  "Cancel",
                   style: TextStyle(
                       color: appDesign.white, fontWeight: FontWeight.bold),
                 ),
@@ -1125,7 +1125,7 @@ Future whenExitDialog(BuildContext context) {
             ),
             FlatButton(
                 child: Text(
-                  "خروج",
+                  "Confirm",
                   style: TextStyle(
                       color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
@@ -1134,8 +1134,8 @@ Future whenExitDialog(BuildContext context) {
                       .invokeMethod<void>('SystemNavigator.pop');
                 })
           ],
-          alertTitle: richTitle("هل تريد الخروج من التطبيق ؟"),
-          alertSubtitle: richSubtitle("سيتم الخروج من التطبيق بمجرد الموافقة"),
+          alertTitle: richTitle("Do you want to signOut ?"),
+          alertSubtitle: richSubtitle("You will signOut when you confirm"),
           alertType: RichAlertType.WARNING,
         );
       });
