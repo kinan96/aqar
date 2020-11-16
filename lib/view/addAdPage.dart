@@ -39,6 +39,7 @@ class _AddAdPageState extends State<AddAdPage> {
   TextEditingController _price = TextEditingController();
   TextEditingController _age = TextEditingController();
   TextEditingController _room = TextEditingController();
+  TextEditingController _nearPlaces = TextEditingController();
   TextEditingController _baths = TextEditingController();
   TextEditingController _landType = TextEditingController();
   TextEditingController _meterPrice = TextEditingController();
@@ -51,25 +52,24 @@ class _AddAdPageState extends State<AddAdPage> {
     _getCities();
     _propertyType = "Rent";
     _kitchen = "Yes";
-    _lift="Yes";
+    _lift = "Yes";
     _familyOrSingle = "Family";
     _vellaOrApartment = "Vella";
     _pool = "Yes";
     _garage = "Yes";
     if (widget.adModel != null) {
       _location.text = widget.adModel.address;
-      adController.changeadLocationData([
-        _location.text,
-        LatLng(widget.adModel.lat,
-           widget.adModel.lng)
-      ]);
+      adController.changeadLocationData(
+          [_location.text, LatLng(widget.adModel.lat, widget.adModel.lng)]);
       _propertyType = widget.adModel.propertyType;
       _kitchen = widget.adModel.kitchen;
+
       _lift = widget.adModel.lift;
       _garage = widget.adModel.garage;
       _pool = widget.adModel.pool;
       _vellaOrApartment = widget.adModel.buildingType;
       _familyOrSingle = widget.adModel.socialStatus;
+      _nearPlaces = TextEditingController(text: widget.adModel.nearPlaces);
       _title = TextEditingController(text: widget.adModel.title);
       _area = TextEditingController(text: widget.adModel.area);
       _district = TextEditingController(text: widget.adModel.district);
@@ -286,13 +286,28 @@ class _AddAdPageState extends State<AddAdPage> {
                           height: 10,
                         ),
                         CustomTextFormField(
+                          lable: "NearPlaces",
+                          textInputType: TextInputType.multiline,
+                          controller: _nearPlaces,
+                          multiLine: true,
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 20, right: 15),
+                            child: Icon(Icons.add_location,
+                                color: Colors.lightBlue),
+                          ),
+                          onValidate: priceValidate,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextFormField(
                           lable: "Location",
                           controller: _location,
-                          onValidate: (v){
-                            if(adController.adLocationData==null)
-                            return "Select Ad Location";
+                          onValidate: (v) {
+                            if (adController.adLocationData == null)
+                              return "Select Ad Location";
                             else
-                            return null;
+                              return null;
                           },
                           onPressed: () {
                             showModalBottomSheet(
@@ -382,11 +397,11 @@ class _AddAdPageState extends State<AddAdPage> {
                               // Spacer(),
                               NormalradioButton(
                                 groupKind: _propertyType,
-                                kind: "Own",
-                                text: "Own",
+                                kind: "Sale",
+                                text: "Sale",
                                 onTap: () {
                                   setState(() {
-                                    _propertyType = "Own";
+                                    _propertyType = "Sale";
                                   });
                                 },
                               )
@@ -733,7 +748,7 @@ class _AddAdPageState extends State<AddAdPage> {
                       if (_cityId == 0)
                         setState(() {
                           _emptyCity = true;
-                          Fluttertoast.showToast(msg:"Select Your City");
+                          Fluttertoast.showToast(msg: "Select Your City");
                         });
                       if (_imagesUrl.length + _imagesFiles.length == 0)
                         setState(() {
@@ -765,6 +780,9 @@ class _AddAdPageState extends State<AddAdPage> {
                             : null,
                         street:
                             _street.text != null ? _street.text.trim() : null,
+                        nearPlaces: _nearPlaces.text != null
+                            ? _nearPlaces.text.trim()
+                            : null,
                         propertyType:
                             _propertyType != null ? _propertyType.trim() : null,
                         lift: _lift != null ? _lift.trim() : null,

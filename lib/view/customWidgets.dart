@@ -851,12 +851,37 @@ class CustomAdOwnerCard extends StatelessWidget {
                     maxLines: 1,
                   ),
                   Spacer(),
-                  CustomText(
-                    adModel.user.email,
-                    size: 20,
-                    maxLines: 1,
-                  ),
-                  Spacer(),
+           Row(children: [
+
+
+    Expanded(
+      child: CustomText(
+                      adModel.user.email,
+                      size: 20,
+                      maxLines: 1,
+                    ),
+    ),
+SizedBox(width: 10,),                   InkWell(
+                            onTap: userController.userModel != null &&
+                                    userController.userModel.id ==
+                                        adModel.user.id
+                                ? null
+                                : () async {
+                                  },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              child:Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(Icons.chat,color: Colors.white,),
+                              )
+                            ),
+                          ),
+           ])
+              
                 ],
               ),
             ))
@@ -1038,7 +1063,7 @@ class PriceRow extends StatelessWidget {
           width: 2,
         ),
         Text(
-          "R.S",
+          "S.R",
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.bold,

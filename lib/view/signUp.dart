@@ -260,23 +260,12 @@ Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Sign
                               
                               userModel: UserModel(
                                   email: _email, firstName: _firstName,lastName: _lastName,type: _typeId==2?"Company":"Normal User", mobile: _phone));
-                  //  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Home()));
                         }
                       },
                       child: Text("Register"),
                     ),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.only(top: 30, bottom: 10),
-                  //   alignment: Alignment.bottomCenter,
-                  //   child: CustomInkWell(
-                  //     text: "ha",
-                  //     onTap: () {
-                  //       Navigator.of(context).pushReplacement(
-                  //           MaterialPageRoute(builder: (context) => SignIn()));
-                  //     },
-                  //   ),
-                  // ),
+            
                   SizedBox(
                     height: 20,
                   ),

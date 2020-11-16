@@ -60,10 +60,10 @@ sc.currentState.showSnackBar(SnackBar(content: Text("${response.data['message']}
         print(model.apiToken);
         userController.changeuserModel(model);
         Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) => Confirm()));
+            .pushReplacement(MaterialPageRoute(builder: (context) => Home()));
       } else if (response.data['status'] == 400) {
               Navigator.pop(context);
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -100,7 +100,7 @@ sc.currentState.showSnackBar(SnackBar(content: Text("${response.data['message']}
       } else if (response.data['status'] == 400) {  
             Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -142,7 +142,7 @@ sc.currentState.showSnackBar(SnackBar(content: Text("${response.data['message']}
         }
       } else if (response.data['status'] == 400) {      Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -196,7 +196,7 @@ print(model.activationCode);
         if(open==null)
              Navigator.pop(context);
 
-       showMSG(context, "رسالة إدارية", response.data['msg'],
+       showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING,actions:open==null?null: [  Container(
         width: MediaQuery.of(context).size.width-120,
 
@@ -233,6 +233,7 @@ print(model.activationCode);
           onReceiveProgress: (sent,total){
             progressRatio.changeprogressRatio("${(sent/total*100).toStringAsFixed(0)}");
           });
+          print(response.data);
       if (response.data['status'] == 200) {
         UserModel model = UserModel.fromJson(response);
 return model;
@@ -289,7 +290,7 @@ Navigator.pop(context);
         }
       } else if (response.data['status'] == 400) {      Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -326,7 +327,7 @@ Navigator.pop(context);
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => Confirm()));
         } else {
-          showMSG(context, "رسالة إدارية", "تم تعديل الباسسورد بنجاح",
+          showMSG(context, "Alert", "تم تعديل الباسسورد بنجاح",
               richAlertType: RichAlertType.SUCCESS,actions:  [Container(
                 width: MediaQuery.of(context).size.width-60,
                 child: Row(
@@ -359,7 +360,7 @@ SizedBox(width: 10,),
         }
       } else if (response.data['status'] == 400) {      Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -407,7 +408,7 @@ SizedBox(width: 10,),
       } else if (response.data['status'] == 400) {    
           Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
         return false;    
       } else if (response.data['status'] == 401) {

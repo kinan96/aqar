@@ -159,7 +159,7 @@ class _AdPageState extends State<AdPage> {
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
                                           discripText:
-                                              "${_adModel.meterPrice.toString()} R.S",
+                                              "${_adModel.meterPrice.toString()} S.R",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -312,6 +312,23 @@ class _AdPageState extends State<AdPage> {
                               SizedBox(
                                 height: 10,
                               ),
+                              TitleAndDiscripWidget(
+                                titleText: "Near Places",
+                                iconData: Icons.add_location,
+                                titleColor: appDesign.hint,
+                                titleSize: 15,
+                                titleFontWeight: FontWeight.w600,
+                                discripWidget:  Text(
+                                        _adModel.nearPlaces??"",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15),
+                                      )
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+
                               TitleAndDiscripWidget(
                                 titleText: "City",
                                 iconData: Icons.call_split,

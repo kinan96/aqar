@@ -137,7 +137,7 @@ class AdController {
       } else if (response.data['status'] == 400) {
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -155,6 +155,7 @@ class AdController {
       String title,
       area,
       district,
+      nearPlaces,
       street,
       propertyType,
       lift,
@@ -194,6 +195,7 @@ class AdController {
       dataMap['building_age'] = age;
       dataMap['lift'] = lift;
       dataMap['room'] = room;
+      dataMap['near_places']=nearPlaces;
       dataMap['bath'] = bath;
             dataMap['area'] = area;
             dataMap['address'] = location;
@@ -216,8 +218,8 @@ class AdController {
       });
       if (response.data['status'] == 200) {
         Navigator.pop(context);
-        showMSG(context, "رسالة إدارية",
-            "تم ${id == null ? "رفع" : "تعديل"} إعلانك بنجاح",
+        showMSG(context, "Alert",
+            id==null?"Uplaoded Succefully":"Updated Succesfully",
             richAlertType: RichAlertType.SUCCESS,
             actions: [
               Container(
@@ -226,7 +228,7 @@ class AdController {
                   children: [
                     Expanded(
                       child: RaisedButton(
-                        child: Text("حسناً"),
+                        child: Text("Ok"),
                         onPressed: () async {
                           Navigator.pop(context);
                           Navigator.pushReplacement(context,
@@ -242,7 +244,7 @@ class AdController {
       } else if (response.data['status'] == 400) {
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -255,7 +257,7 @@ class AdController {
 
   Future deleteAd(BuildContext context, {int id}) async {
     try {
-      progressRatio.changeprogressRatio("حذف...");
+      progressRatio.changeprogressRatio("Deleting...");
       showLoadingContext(context);
       Response response = await Dio().delete(
         "$baseUrl/ad/$id",
@@ -270,7 +272,7 @@ class AdController {
       } else if (response.data['status'] == 400) {
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -303,7 +305,7 @@ class AdController {
       } else if (response.data['status'] == 400) {
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -332,7 +334,7 @@ class AdController {
         Navigator.pop(context);
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -364,12 +366,12 @@ class AdController {
         print(response.data);
         Fluttertoast.showToast(
             msg: status
-                ? "تم حذف الإعلان من المفضلة"
-                : "تمت إضافة الإعلان للمفضلة");
+                ? ""
+                : "");
       } else if (response.data['status'] == 400) {
         // Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");
@@ -400,7 +402,7 @@ class AdController {
       } else if (response.data['status'] == 400) {
         Navigator.pop(context);
 
-        showMSG(context, "رسالة إدارية", response.data['msg'],
+        showMSG(context, "Alert", response.data['msg'],
             richAlertType: RichAlertType.WARNING);
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");

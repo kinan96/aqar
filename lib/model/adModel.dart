@@ -7,6 +7,7 @@ class AdModel {
       district,
       street,username,
       postalCode,
+      nearPlaces,
       propertyType,//rent/won
       address
       ; // for property
@@ -44,6 +45,7 @@ class AdModel {
       this.district,
       this.socialStatus,
       this.garage,
+      this.nearPlaces,
       this.address,
       this.kitchen,
       this.landType,
@@ -109,6 +111,7 @@ class AdModel {
         meterPrice:double.tryParse(json['meter_price'].toString()),
         note: json['note'],
         pool: json['pool'],
+       nearPlaces: json['near_places'],
         postalCode: json['postal_code'],
         propertyType: json['property_type'],
         room: json['room'],

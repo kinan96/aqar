@@ -346,7 +346,7 @@ class CustomAdCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "R.S",
+                            "S.R",
                             style: TextStyle(
                               color: Colors.blue,
                               fontWeight: FontWeight.bold,

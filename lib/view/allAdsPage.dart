@@ -10,7 +10,8 @@ import 'package:loading_animations/loading_animations.dart';
 
 class AllAdsPage extends StatefulWidget {
   String title;
-  AllAdsPage({this.title});
+    bool noAppBar;
+  AllAdsPage({this.title,this.noAppBar});
   @override
   _AllAdsPageState createState() => _AllAdsPageState();
 }
@@ -38,9 +39,9 @@ class _AllAdsPageState extends State<AllAdsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: _sc,
-        appBar: buildCustomAppBar(title: widget.title ?? "Ads Filter"),
+        appBar:widget.noAppBar!=null?null: buildCustomAppBar(title: widget.title ?? "Ads Filter"),
         body: Padding(
-          padding: EdgeInsets.only(top: 0, left: 20, right: 20, bottom: 20),
+          padding: EdgeInsets.only(top:widget.noAppBar!=null?20: 0, left: 20, right: 20, bottom: 20),
           child: _ads == null
               ? Center(child: LoadingBouncingGrid.square())
               : _ads.length == 0
@@ -50,21 +51,13 @@ class _AllAdsPageState extends State<AllAdsPage> {
                       textAlign: TextAlign.center,
                       color: appDesign.hint,
                     )
-                  : Column(
-                      children: [
-                       
-                   
-                        Expanded(
-                          child: ListView.separated(
-                              itemBuilder: (context, i) =>
-                                  CustomAdCard(adModel: _ads[i]),
-                              separatorBuilder: (context, i) => SizedBox(
-                                    height: 0,
-                                  ),
-                              itemCount: _ads.length),
-                        ),
-                      ],
-                    ),
+                  : ListView.separated(
+                      itemBuilder: (context, i) =>
+                          CustomAdCard(adModel: _ads[i]),
+                      separatorBuilder: (context, i) => SizedBox(
+                            height: 0,
+                          ),
+                      itemCount: _ads.length),
         ));
   }
 }

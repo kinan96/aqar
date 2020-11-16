@@ -102,7 +102,7 @@ class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
   TextEditingController _searchCTL = TextEditingController();
   int _pageIndex;
-  List<String> _titles = ["Aqar Application", "Chat"];
+  List<String> _titles = ["Aqar Application","My Properties","All Properties" ,"Chat"];
   PageController _pageController;
   @override
   Widget build(BuildContext context) {
@@ -191,8 +191,17 @@ class _HomeState extends State<Home> {
                   case 0:
                     return HomeBody();
                     break;
+
                   case 1:
-                    return Scaffold();
+                    return MyProperties(noAppBar: true,);
+                    break;
+                  case 2:
+                    return AllAdsPage(noAppBar: true,);
+                    break;
+                  case 3:
+                    return Scaffold(
+                      
+                    );
                     break;
 
                   default:
@@ -303,13 +312,32 @@ class _HomeState extends State<Home> {
                     await _getCities();
                   },
                 ),
-                CustomBottomNavigationBarItem(
-                  iconData: Icons.chat,
+                  CustomBottomNavigationBarItem(
+                  iconData: Icons.assignment_ind,
                   index: 1,
                   onTap: () {
                     setState(() {
                       homeController.changeSelectedBNBItem(1);
-                      _pageIndex = 1;
+                      _pageIndex =1;
+                    });
+                  },
+                ),  CustomBottomNavigationBarItem(
+                  iconData: Icons.crop_landscape,
+                  index: 2,
+                  onTap: () {
+                    setState(() {
+                      homeController.changeSelectedBNBItem(2);
+                      _pageIndex =2;
+                    });
+                  },
+                ),
+                CustomBottomNavigationBarItem(
+                  iconData: Icons.chat,
+                  index: 3,
+                  onTap: () {
+                    setState(() {
+                      homeController.changeSelectedBNBItem(3);
+                      _pageIndex = 3;
                     });
                   },
                 ),

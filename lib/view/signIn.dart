@@ -178,20 +178,7 @@ bool _stop=false;
                       ],
                     ),
                   ),
-                  // Container(
-                  //   margin: EdgeInsets.only(top: 30, bottom: 10),
-                  //   alignment: Alignment.bottomCenter,
-                  //   child: CustomInkWell(
-                  //     text: "لا تمتلك حساب ؟ سجل الآن",
-                  //     onTap: () {
-                  //       Navigator.of(context).pushReplacement(
-                  //           MaterialPageRoute(builder: (context) => SignUp()));
-                  //     },
-                  //   ),
-                  // ),
-                  // SizedBox(
-                  //   height: 20,
-                  // ),
+                 
                 ],
               ),
             ),
