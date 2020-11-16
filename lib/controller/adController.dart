@@ -318,7 +318,7 @@ class AdController {
 
   Future deleteComment(BuildContext context, {int id}) async {
     try {
-      progressRatio.changeprogressRatio("حذف...");
+      progressRatio.changeprogressRatio("Deleting...");
       showLoadingContext(context);
       Response response = await Dio().delete(
         "$baseUrl/comment/$id",
