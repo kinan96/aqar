@@ -432,7 +432,7 @@ class _AdPageState extends State<AdPage> {
                                                               builder:
                                                                   (context) =>
                                                                       AddAdPage(
-                                                                        type: widget.adModel.buildingAge ==
+                                                                        type: widget.adModel.meterPrice !=
                                                                                 null
                                                                             ? "Land"
                                                                             : "Property",
