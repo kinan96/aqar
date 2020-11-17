@@ -425,14 +425,14 @@ class _AdPageState extends State<AdPage> {
                                             Expanded(
                                                 child: FlatButton(
                                                     color: Colors.blue,
-                                                    onPressed: () {
+                                                    onPressed:_adModel==null?null: () {
                                                       Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
                                                               builder:
                                                                   (context) =>
                                                                       AddAdPage(
-                                                                        type: widget.adModel.meterPrice !=
+                                                                        type: _adModel.meterPrice !=
                                                                                 null
                                                                             ? "Land"
                                                                             : "Property",
