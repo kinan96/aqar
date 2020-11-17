@@ -58,7 +58,7 @@ class AdController {
         return adController.categories;
       }
 
-      Map<int, String> _categories = {0: "التصنيف الرئيسي"};
+      Map<int, String> _categories = {0: "Main Category"};
       Response response = await Dio().get("$baseUrl/category",
           options: Options(
               receiveDataWhenStatusError: true,
@@ -89,7 +89,7 @@ class AdController {
         return adController.cities;
       }
 
-      Map<int, String> _cities = {0: "المدينة"};
+      Map<int, String> _cities = {0: "City"};
       Response response = await Dio().get("$baseUrl/city");
       if (response.data['status'] == 200) {
         for (Map<String, dynamic> city in response.data['data'])

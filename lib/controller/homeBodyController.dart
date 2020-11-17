@@ -52,7 +52,7 @@ for(Map<String,dynamic>image in response.data['data'])
 _images.add(image['image']);
 return _images;
       } else if (response.data['status'] == 400) {
-      showMSG(context, "خطأ", response.data['msg'].toString())
+      showMSG(context, "Error", response.data['msg'].toString())
 ;
       } else if (response.data['status'] == 401) {
         await removeSharedOfKey("savedUser");

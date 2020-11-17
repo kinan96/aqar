@@ -233,7 +233,7 @@ class _HomeState extends State<Home> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => AddAdPage(
-                                                type: "land",
+                                                type: "Land",
                                               )));
                                 },
                                 child: Column(
@@ -436,7 +436,7 @@ class CustomDrawer extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => AddAdPage(
-                                                type: "land",
+                                                type: "Land",
                                               )));
                                 },
                                 child: Column(

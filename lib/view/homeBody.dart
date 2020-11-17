@@ -217,7 +217,7 @@ Marker homeMarker(
           alignment: Alignment.center,
           padding: EdgeInsets.all(5),
           child: Text(
-            adModel != null ? "${adModel.price} R.S" : cityModel.name,
+            adModel != null ? "${adModel.price} S.R" : cityModel.name,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Colors.deepPurple[900],

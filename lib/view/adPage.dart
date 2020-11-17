@@ -134,7 +134,7 @@ class _AdPageState extends State<AdPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              widget.adModel.landType != null
+                              _adModel.meterPrice!= null
                                   ? Column(
                                       children: [
                                         TitleAndDiscripWidget(
@@ -145,7 +145,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.landType,
+                                          discripText: _adModel.landType??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -176,7 +176,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.buildingAge,
+                                          discripText: _adModel.buildingAge??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -189,7 +189,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.lift,
+                                          discripText: _adModel.lift??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -202,7 +202,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.room,
+                                          discripText: _adModel.room??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -216,7 +216,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.bath,
+                                          discripText: _adModel.bath??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -229,7 +229,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.kitchen,
+                                          discripText: _adModel.kitchen??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -242,7 +242,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.socialStatus,
+                                          discripText: _adModel.socialStatus??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -255,7 +255,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.buildingType,
+                                          discripText: _adModel.buildingType??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -268,7 +268,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.pool,
+                                          discripText: _adModel.pool??"",
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -281,7 +281,7 @@ class _AdPageState extends State<AdPage> {
                                           titleFontWeight: FontWeight.w600,
                                           discripSize: 18,
                                           discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.garage,
+                                          discripText: _adModel.garage??"",
                                         ),
                                       ],
                                     ),
@@ -303,7 +303,7 @@ class _AdPageState extends State<AdPage> {
                                 titleSize: 15,
                                 titleFontWeight: FontWeight.w600,
                                 discripWidget:  Text(
-                                        _adModel.address,
+                                        _adModel.address??"",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15),
@@ -337,7 +337,7 @@ class _AdPageState extends State<AdPage> {
                                 titleFontWeight: FontWeight.w600,
                                 discripSize: 18,
                                 discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.city.name,
+                                discripText: _adModel.city.name??"",
                               ),
                               SizedBox(
                                 height: 10,
@@ -350,7 +350,7 @@ class _AdPageState extends State<AdPage> {
                                 titleFontWeight: FontWeight.w600,
                                 discripSize: 18,
                                 discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.area,
+                                discripText: _adModel.area??"",
                               ),
                               SizedBox(
                                 height: 10,
@@ -363,7 +363,7 @@ class _AdPageState extends State<AdPage> {
                                 titleFontWeight: FontWeight.w600,
                                 discripSize: 18,
                                 discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.district,
+                                discripText: _adModel.district??"",
                               ),
                               SizedBox(
                                 height: 10,
@@ -376,7 +376,7 @@ class _AdPageState extends State<AdPage> {
                                 titleFontWeight: FontWeight.w600,
                                 discripSize: 18,
                                 discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.street,
+                                discripText: _adModel.street??"",
                               ),
                               SizedBox(
                                 height: 10,
@@ -389,7 +389,7 @@ class _AdPageState extends State<AdPage> {
                                 titleFontWeight: FontWeight.w600,
                                 discripSize: 18,
                                 discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.postalCode,
+                                discripText: _adModel.postalCode??"",
                               ),
                               TitleAndDiscripWidget(
                                 titleText: "Ad Owner Details",
@@ -432,10 +432,10 @@ class _AdPageState extends State<AdPage> {
                                                               builder:
                                                                   (context) =>
                                                                       AddAdPage(
-                                                                        type: widget.adModel.meterPrice ==
+                                                                        type: widget.adModel.buildingAge ==
                                                                                 null
-                                                                            ? "Property"
-                                                                            : "Land",
+                                                                            ? "Land"
+                                                                            : "Property",
                                                                         adModel:
                                                                             _adModel,
                                                                       )));

@@ -408,7 +408,7 @@ class _AddAdPageState extends State<AddAdPage> {
                             ],
                           ),
                         ),
-                        widget.type == "land"
+                        widget.type == "Land"
                             ? Column(
                                 children: [
                                   CustomTextFormField(

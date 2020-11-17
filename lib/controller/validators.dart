@@ -54,14 +54,9 @@ String detailsValidate(v) {
 String nameValidate(v) {
   if (v.isEmpty)
     return "Please insert First Name";
-// else {
-//   List co=v.toString().split(" ");
-//     if(co.last==""||co.length<4)
-//       return "من فضلك أدخل اسمك الرباعي";
   else
     return null;
 
-  // }
 }
 
 String codeValidate(v) {

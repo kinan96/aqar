@@ -19,7 +19,7 @@ class UserController {
   Function(UserModel) get changeuserModel => _userModel.sink.add;
   UserModel get userModel => _userModel.value;
   Stream<UserModel> get userModelStream => _userModel.stream;
-Map<int,String>appCities={0:"جاري تحميل المدن..."};
+Map<int,String>appCities={0:"Loading cities..."};
   dispose() {
     _userModel.close();
   }
@@ -201,7 +201,7 @@ print(model.activationCode);
         width: MediaQuery.of(context).size.width-120,
 
         child: RaisedButton(
-          child:Text("حسناً"),
+          child:Text("Ok"),
           
           onPressed: ()async{
                     await removeSharedOfKey("savedUser");
@@ -327,14 +327,14 @@ Navigator.pop(context);
           Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => Confirm()));
         } else {
-          showMSG(context, "Alert", "تم تعديل الباسسورد بنجاح",
+          showMSG(context, "Alert", "Password updated successfully",
               richAlertType: RichAlertType.SUCCESS,actions:  [Container(
                 width: MediaQuery.of(context).size.width-60,
                 child: Row(
                   children: [
                     Expanded(
                       child: RaisedButton(
-                        child:Text( "تسجيل دخول"),
+                        child:Text( "Login"),
                         onPressed: ()async{
                                  await signIn(context, userController.userModel.email.trim(), newPassword);
 
@@ -344,7 +344,7 @@ Navigator.pop(context);
 SizedBox(width: 10,),
                      Expanded(
                        child: RaisedButton(
-                        child:Text( "إلغاء")
+                        child:Text( "Cancel")
                         ,
                         color: appDesign.white,
                         
@@ -441,7 +441,7 @@ SizedBox(width: 10,),
             .pushReplacement(MaterialPageRoute(builder: (context) => SignIn()));
       } else if(response.data['status']==400) {      Navigator.pop(context);
 
-        showMSG(context, "خطأ", response.data['msg'],
+        showMSG(context, "Error", response.data['msg'],
             richAlertType: RichAlertType.ERROR);
       }
       else{
