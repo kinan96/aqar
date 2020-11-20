@@ -6,6 +6,7 @@ import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/allAdsPage.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/editProfile.dart';
+import 'package:aqar/view/filter.dart';
 import 'package:aqar/view/homeBody.dart';
 import 'package:aqar/view/myProperties.dart';
 import 'package:aqar/view/signIn.dart';
@@ -22,46 +23,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  _getCities() async {
-    searchBodyController.changebackToCities(false);
-    searchBodyController.changeloading(true);
-    List<CityModel> _city = await userController.getListOfCites(_scaffold);
 
-    if (mounted) if (_city != null && _city.length > 0)
-      setState(() {
-        searchBodyController.changeloading(false);
-        List<Marker> _markers = List.generate(
-            _city.length,
-            (index) => homeMarker(
-                cityModel: _city[index],
-                connect: true,
-                context: context,
-                hasStatus: false,
-                onPressed: () async {
-                  searchBodyController
-                      .changesearchCityIdFilter(_city[index].id);
-                  if (mounted)
-                    setState(() {
-                      searchBodyController.changeloading(true);
-                      searchBodyController.changebackToCities(true);
-                    });
-                  List ads = await homeBodyController.search(
-                      cityId: _city[index].id, sc: _scaffold);
-                  searchBodyController.changeloading(false);
-                  List<Marker> _markers = List.generate(
-                      ads[1].length,
-                      (index) => homeMarker(
-                          adModel: ads[1][index],
-                          connect: true,
-                          context: context,
-                          hasStatus: false,
-                          onPressed: () async {}));
-                  searchBodyController.changesearchedListOfAdMarkers(_markers);
-                }));
-        searchBodyController.changesearchedListOfAdMarkers(_markers);
-        searchBodyController.changebackToCities(false);
-      });
-  }
 
   initState() {
     searchBodyController.changebackToCities(false);
@@ -163,11 +125,13 @@ class _HomeState extends State<Home> {
                                     onPressed: () async {}));
                             searchBodyController
                                 .changesearchedListOfAdMarkers(_markers);
+                                                                            searchBodyController.changemapZoom(11);
                           },
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
                               onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Filter()));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),
@@ -271,7 +235,7 @@ class _HomeState extends State<Home> {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Vella/Apartment",
+                                      "Villa/Apartment",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -309,7 +273,6 @@ class _HomeState extends State<Home> {
                       homeController.changeSelectedBNBItem(0);
                       _pageIndex = 0;
                     });
-                    await _getCities();
                   },
                 ),
                   CustomBottomNavigationBarItem(
@@ -474,7 +437,7 @@ class CustomDrawer extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Vella/Apartment",
+                                      "Villa/Apartment",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,

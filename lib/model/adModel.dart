@@ -17,7 +17,7 @@ class AdModel {
       bath,
       kitchen,
       socialStatus,//familyor
-      buildingType,//vellaor
+      buildingType,//Villaor
       pool,
       garage; // for general
   double meterPrice;

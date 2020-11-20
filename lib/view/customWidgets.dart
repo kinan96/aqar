@@ -132,6 +132,7 @@ class CustomText extends StatelessWidget {
 
 class CustomTextFormField extends StatefulWidget {
   bool isPassword;
+  Function newValidate;
   TextEditingController controller;
   String lable;
   Widget prefixIcon;
@@ -149,6 +150,7 @@ class CustomTextFormField extends StatefulWidget {
       this.prefixIcon,
       this.isPassword,
       this.lable,
+      this.newValidate,
       this.onSaved,
       this.controller,
       this.textInputType,
@@ -191,7 +193,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               : TextDirection.ltr,
           minLines: 1,
           maxLines: widget.multiLine != null ? 6 : 1,
-          validator:emptyValidate,// widget.onValidate,
+          validator:widget.newValidate ?? emptyValidate,// widget.onValidate,
           keyboardType: widget.textInputType,
           textAlign: TextAlign.left,
           decoration: InputDecoration(
@@ -1078,11 +1080,13 @@ class PriceRow extends StatelessWidget {
 class AdHeaderDetails extends StatelessWidget {
   String name;
   String price;
-  String cat;
+  String area;
+  String propertyType;
   AdHeaderDetails({
     this.name,
-    this.cat,
+    this.propertyType,
     this.price,
+this.area,
     Key key,
   }) : super(key: key);
 
@@ -1103,8 +1107,13 @@ class AdHeaderDetails extends StatelessWidget {
                     size: 18,
                     maxLines: 2,
                   )),
-              PriceRow(
-                price: "$price",
+              Column(
+                children: [
+                  PriceRow(
+                    price: "$price",
+                  ),
+                 
+                ],
               )
             ],
           ),
@@ -1113,13 +1122,38 @@ class AdHeaderDetails extends StatelessWidget {
           ),
           Row(
             children: [
-              Expanded(
-                child: CustomText(
-                  "$cat",
-                  size: 15,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+           
+                  Expanded(
+                    flex: 9,
+                    child: TitleAndDiscripWidget(
+                                  titleText: "Type",
+                                  iconData: Icons.map,
+                                  titleColor: appDesign.hint,
+                                  titleSize: 15,
+                                  titleFontWeight: FontWeight.w600,
+                                  discripSize: 18,
+                                  discripFontWeight: FontWeight.bold,
+                                  discripText: propertyType,
+                                ),
+                  ),
+                                         SizedBox(
+                                width: 10,
+                              ),
+
+                              Expanded(
+                                flex: 3,
+                                child: TitleAndDiscripWidget(
+                                  titleText: "Area",
+                                  iconData: Icons.call_split,
+                                  titleColor: appDesign.hint,
+                                  titleSize: 15,
+                                  titleFontWeight: FontWeight.w600,
+                                  discripSize: 18,
+                                  discripFontWeight: FontWeight.bold,
+                                  discripText: area +" m2" ?? "",
+                                ),
+                              ),
+                            
             ],
           )
         ],

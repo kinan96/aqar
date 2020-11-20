@@ -24,7 +24,7 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
   }
 
   _getCities() async {
-        searchBodyController.changebackToCities(false);
+    searchBodyController.changebackToCities(false);
     searchBodyController.changeloading(true);
     List<CityModel> _city = await userController.getListOfCites(_sc);
 
@@ -41,7 +41,9 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 onPressed: () async {
                   searchBodyController
                       .changesearchCityIdFilter(_city[index].id);
-                  _mapController.move(_city[index].latLng, 5);
+                                          searchBodyController.changemapZoom(11);
+                    _mapController.move(_city[index].latLng, 11);
+
                   if (mounted)
                     setState(() {
                       _markers = [];
@@ -50,7 +52,7 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                     });
                   List ads = await homeBodyController.search(
                       cityId: _city[index].id, sc: _sc);
-                      searchBodyController.changeloading(false);
+                  searchBodyController.changeloading(false);
                   setState(() {
                     _markers = List.generate(
                         ads[1].length,
@@ -60,12 +62,13 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                             context: context,
                             hasStatus: false,
                             onPressed: () async {}));
+
                     searchBodyController
                         .changesearchedListOfAdMarkers(_markers);
                   });
                 }));
-                searchBodyController.changesearchedListOfAdMarkers(_markers);
-                                      searchBodyController.changebackToCities(false);
+        searchBodyController.changesearchedListOfAdMarkers(_markers);
+        searchBodyController.changebackToCities(false);
         _cityMarkers = _markers;
       });
   }
@@ -82,7 +85,6 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
   // }
   MapController _mapController = MapController();
   LatLng _center = LatLng(24.774265, 46.738586);
-  double _zoom = 4.5;
   List<Marker> _markers = [];
   @override
   Widget build(BuildContext context) {
@@ -119,30 +121,35 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 initialData: false,
                 builder: (context, load) => Stack(
                       children: [
-                        StreamBuilder<List<Marker>>(
-                            stream: searchBodyController
-                                .searchedListOfAdMarkersStream,
-                            initialData: [],
-                            builder: (context, snapshot) {
-                              return FlutterMap(
-                                mapController: _mapController,
-                                options: new MapOptions(
-                                  center: _center,
-                                  zoom: _zoom,
-                                ),
-                                layers: [
-                                  new TileLayerOptions(
-                                      urlTemplate:
-                                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                      subdomains: ['a', 'b', 'c']),
-                                  new MarkerLayerOptions(
-                                      markers: snapshot.hasData &&
-                                              snapshot.data.length > 0
-                                          ? snapshot.data
-                                          : _markers),
-                                ],
-                              );
-                            }),
+                        StreamBuilder(
+                          stream: searchBodyController.mapZoomStream,
+                          initialData: 4.5,
+                          builder: (context, zoom) =>
+                              StreamBuilder<List<Marker>>(
+                                  stream: searchBodyController
+                                      .searchedListOfAdMarkersStream,
+                                  initialData: [],
+                                  builder: (context, snapshot) {
+                                    return FlutterMap(
+                                      mapController: _mapController,
+                                      options: new MapOptions(
+                                        center: _center,
+                                        zoom: zoom.data,
+                                      ),
+                                      layers: [
+                                        new TileLayerOptions(
+                                            urlTemplate:
+                                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                            subdomains: ['a', 'b', 'c']),
+                                        new MarkerLayerOptions(
+                                            markers: snapshot.hasData &&
+                                                    snapshot.data.length > 0
+                                                ? snapshot.data
+                                                : _markers),
+                                      ],
+                                    );
+                                  }),
+                        ),
                         load.data
                             ? Center(
                                 child: LoadingBouncingGrid.circle(
@@ -159,37 +166,38 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                             child: !back.data
                                 ? SizedBox()
                                 : IconButton(
-                                      icon:Container(
+                                    icon: Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(10))
-                                  ),
-                                  child:  Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 25,
-                                        color: Colors.blue,
-                                      )),
-                                      onPressed: back.data
-                                          ? () {
-                                              searchBodyController
-                                                  .changesearchCityIdFilter(null);
-                                              searchBodyController
-                                                  .changesearchedListOfAdMarkers(
-                                                      _cityMarkers);
-                                              if (mounted)
-                                                setState(() {
-                                                  _mapController.move(
-                                                      _center, _zoom);
-                                                  searchBodyController
-                                                      .changebackToCities(false);
-                                                });
-                                            }
-                                          : null),
-                                ),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        child: Icon(
+                                          Icons.arrow_back_ios,
+                                          size: 25,
+                                          color: Colors.blue,
+                                        )),
+                                    onPressed: back.data
+                                        ? () {
+                                            searchBodyController
+                                                .changesearchCityIdFilter(null);
+                                            searchBodyController
+                                                .changesearchedListOfAdMarkers(
+                                                    _cityMarkers);
+                                            if (mounted)
+                                              setState(() {
+                                                searchBodyController
+                                                    .changemapZoom(4.5);
+                                                _mapController.move(
+                                                    _center, 4.5);
+                                                searchBodyController
+                                                    .changebackToCities(false);
+                                              });
+                                          }
+                                        : null),
                           ),
-                        
+                        ),
                       ],
                     )),
           ),
@@ -210,9 +218,16 @@ Marker homeMarker(
     point:
         adModel != null ? LatLng(adModel.lat, adModel.lng) : cityModel.latLng,
     builder: (ctx) => InkWell(
-      onTap:adModel!=null?(){
-        Navigator.push(context,MaterialPageRoute(builder: (context)=>AdPage(adModel: adModel,)));
-      }: onPressed,
+      onTap: adModel != null
+          ? () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AdPage(
+                            adModel: adModel,
+                          )));
+            }
+          : onPressed,
       child: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.all(5),
@@ -296,7 +311,10 @@ class CustomAdCard extends StatelessWidget {
                   ),
                   Spacer(),
                   CustomText(
-                    adModel != null ? adModel.username??"${adModel.user.firstName} ${adModel.user.lastName}" : "",
+                    adModel != null
+                        ? adModel.username ??
+                            "${adModel.user.firstName} ${adModel.user.lastName}"
+                        : "",
                     size: 14,
                     maxLines: 1,
                   ),

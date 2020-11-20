@@ -161,7 +161,7 @@ class AdController {
       lift,
       kitchen,
       familyOrSingle,
-      vellaOrapartment,
+      VillaOrapartment,
       pool,
       garage,
       note,
@@ -201,7 +201,7 @@ class AdController {
             dataMap['address'] = location;
       dataMap['kitchen'] = kitchen;
       dataMap['social_status'] = familyOrSingle;
-      dataMap['building_type'] = vellaOrapartment;
+      dataMap['building_type'] = VillaOrapartment;
       dataMap['pool'] = pool;
       dataMap['garage'] = garage;
       dataMap['meter_price'] = meterPrice;

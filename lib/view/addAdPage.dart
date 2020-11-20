@@ -33,7 +33,7 @@ class _AddAdPageState extends State<AddAdPage> {
   String _lift;
   String _kitchen;
   String _familyOrSingle;
-  String _vellaOrApartment;
+  String _VillaOrApartment;
   String _pool;
   String _garage;
   TextEditingController _price = TextEditingController();
@@ -54,7 +54,7 @@ class _AddAdPageState extends State<AddAdPage> {
     _kitchen = "Yes";
     _lift = "Yes";
     _familyOrSingle = "Family";
-    _vellaOrApartment = "Vella";
+    _VillaOrApartment = "Villa";
     _pool = "Yes";
     _garage = "Yes";
     if (widget.adModel != null) {
@@ -67,7 +67,7 @@ class _AddAdPageState extends State<AddAdPage> {
       _lift = widget.adModel.lift;
       _garage = widget.adModel.garage;
       _pool = widget.adModel.pool;
-      _vellaOrApartment = widget.adModel.buildingType;
+      _VillaOrApartment = widget.adModel.buildingType;
       _familyOrSingle = widget.adModel.socialStatus;
       _nearPlaces = TextEditingController(text: widget.adModel.nearPlaces);
       _title = TextEditingController(text: widget.adModel.title);
@@ -218,19 +218,7 @@ class _AddAdPageState extends State<AddAdPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          lable: "Area",
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 20, right: 15),
-                            child: Icon(Icons.add_location,
-                                color: Colors.lightBlue),
-                          ),
-                          controller: _area,
-                          onValidate: emptyValidate,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                      
                         CustomTextFormField(
                           lable: "District",
                           prefixIcon: Padding(
@@ -271,20 +259,7 @@ class _AddAdPageState extends State<AddAdPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        CustomTextFormField(
-                          lable: "Price",
-                          textInputType: TextInputType.number,
-                          controller: _price,
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(left: 20, right: 15),
-                            child: Icon(Icons.attach_money,
-                                color: Colors.lightBlue),
-                          ),
-                          onValidate: priceValidate,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
+                     
                         CustomTextFormField(
                           lable: "NearPlaces",
                           textInputType: TextInputType.multiline,
@@ -387,7 +362,7 @@ class _AddAdPageState extends State<AddAdPage> {
                               NormalradioButton(
                                 groupKind: _propertyType,
                                 kind: "Rent",
-                                text: "Rent",
+                                text: "Rent / Year",
                                 onTap: () {
                                   setState(() {
                                     _propertyType = "Rent";
@@ -407,6 +382,33 @@ class _AddAdPageState extends State<AddAdPage> {
                               )
                             ],
                           ),
+                        ),
+                           CustomTextFormField(
+                          lable:_propertyType=="Rent"?"Price / Year": "Price",
+                          textInputType: TextInputType.number,
+                          controller: _price,
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 20, right: 15),
+                            child: Icon(Icons.attach_money,
+                                color: Colors.lightBlue),
+                          ),
+                          onValidate: priceValidate,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),  CustomTextFormField(
+                          lable: "Area in M2",
+                        
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(left: 20, right: 15),
+                            child: Icon(Icons.add_location,
+                                color: Colors.lightBlue),
+                          ),
+                          controller: _area,
+                          onValidate: emptyValidate,
+                        ),
+                        SizedBox(
+                          height: 10,
                         ),
                         widget.type == "Land"
                             ? Column(
@@ -446,6 +448,15 @@ class _AddAdPageState extends State<AddAdPage> {
                                     lable: "Age / years",
                                     textInputType: TextInputType.number,
                                     controller: _age,
+                                      newValidate: (v){
+                            if(v.isEmpty)
+                            return "This field can\'t be empty";
+                            else if(double.tryParse(v)==null)
+                            return "Please enter only numbers";
+                            else if(double.parse(v)>50)
+                            return "Age shouldn\'t be more than 50 years";
+                            else return null;
+                          },
                                     prefixIcon: Padding(
                                       padding:
                                           EdgeInsets.only(left: 20, right: 15),
@@ -458,9 +469,18 @@ class _AddAdPageState extends State<AddAdPage> {
                                     height: 10,
                                   ),
                                   CustomTextFormField(
-                                    lable: "Rooms",
+                                    lable: "Number Of Rooms",
                                     textInputType: TextInputType.number,
                                     controller: _room,
+                                        newValidate: (v){
+                            if(v.isEmpty)
+                            return "This field can\'t be empty";
+                            else if(double.tryParse(v)==null)
+                            return "Please enter only numbers";
+                            else if(double.parse(v)>20)
+                            return "Rooms shouldn\'t be more than 20";
+                            else return null;
+                          },
                                     prefixIcon: Padding(
                                       padding:
                                           EdgeInsets.only(left: 20, right: 15),
@@ -473,9 +493,18 @@ class _AddAdPageState extends State<AddAdPage> {
                                     height: 10,
                                   ),
                                   CustomTextFormField(
-                                    lable: "Baths",
+                                    lable: "Number Of Baths",
                                     textInputType: TextInputType.number,
                                     controller: _baths,
+                                        newValidate: (v){
+                            if(v.isEmpty)
+                            return "This field can\'t be empty";
+                            else if(double.tryParse(v)==null)
+                            return "Please enter only numbers";
+                            else if(double.parse(v)>20)
+                            return "Baths shouldn\'t be more than 20";
+                            else return null;
+                          },
                                     prefixIcon: Padding(
                                       padding:
                                           EdgeInsets.only(left: 20, right: 15),
@@ -488,7 +517,7 @@ class _AddAdPageState extends State<AddAdPage> {
                                   SizedBox(
                                     height: 10,
                                   ),
-                                  TitleAndDiscripWidget(
+                             _propertyType=="Rent"?     TitleAndDiscripWidget(
                                     titleText: "Family or Single",
                                     heightSpace: 0,
                                     discripWidget: Row(
@@ -518,32 +547,32 @@ class _AddAdPageState extends State<AddAdPage> {
                                         )
                                       ],
                                     ),
-                                  ),
+                                  ):SizedBox(),
                                   TitleAndDiscripWidget(
-                                    titleText: "Vella or Apartment",
+                                    titleText: "Villa or Apartment",
                                     heightSpace: 0,
                                     discripWidget: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         NormalradioButton(
-                                          groupKind: _vellaOrApartment,
-                                          kind: "Vella",
-                                          text: "Vella",
+                                          groupKind: _VillaOrApartment,
+                                          kind: "Villa",
+                                          text: "Villa",
                                           onTap: () {
                                             setState(() {
-                                              _vellaOrApartment = "Vella";
+                                              _VillaOrApartment = "Villa";
                                             });
                                           },
                                         ),
                                         // Spacer(),
                                         NormalradioButton(
-                                          groupKind: _vellaOrApartment,
+                                          groupKind: _VillaOrApartment,
                                           kind: "Apartment",
                                           text: "Apartment",
                                           onTap: () {
                                             setState(() {
-                                              _vellaOrApartment = "Apartment";
+                                              _VillaOrApartment = "Apartment";
                                             });
                                           },
                                         )
@@ -790,8 +819,8 @@ class _AddAdPageState extends State<AddAdPage> {
                         familyOrSingle: _familyOrSingle != null
                             ? _familyOrSingle.trim()
                             : null,
-                        vellaOrapartment: _vellaOrApartment != null
-                            ? _vellaOrApartment.trim()
+                        VillaOrapartment: _VillaOrApartment != null
+                            ? _VillaOrApartment.trim()
                             : null,
                         pool: _pool != null ? _pool.trim() : null,
                         garage: _garage != null ? _garage.trim() : null,
