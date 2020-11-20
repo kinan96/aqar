@@ -472,10 +472,12 @@ class ChatAppBar extends StatelessWidget {
                  Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => AdPage(adModel: chatModel.adModel,))):
 
+     
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AllChats()))
+            context, MaterialPageRoute(builder: (context) => Home(
+              index: 3,
+            )))
             ;
-
             },
           ),
         
