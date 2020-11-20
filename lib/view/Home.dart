@@ -4,6 +4,7 @@ import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/allAdsPage.dart';
+import 'package:aqar/view/chat.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/editProfile.dart';
 import 'package:aqar/view/filter.dart';
@@ -163,7 +164,7 @@ class _HomeState extends State<Home> {
                     return AllAdsPage(noAppBar: true,);
                     break;
                   case 3:
-                    return Scaffold(
+                    return AllChats(
                       
                     );
                     break;

@@ -4,10 +4,12 @@ import 'package:aqar/controller/adController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/adModel.dart';
+import 'package:aqar/model/chatModel.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
 import 'package:aqar/view/adOwnerPage.dart';
+import 'package:aqar/view/chatPage.dart';
 import 'package:aqar/view/editProfile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -864,12 +866,17 @@ class CustomAdOwnerCard extends StatelessWidget {
                     ),
     ),
 SizedBox(width: 10,),                   InkWell(
-                            onTap: userController.userModel != null &&
-                                    userController.userModel.id ==
-                                        adModel.user.id
-                                ? null
-                                : () async {
-                                  },
+                            onTap:userController.userModel!=null&&  userController.userModel.id==adModel.user.id? null: () async {
+                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>ChatPage(
+                                from:adOwnerPage!=null?"owner":"ad" ,
+                                chatModel: ChatModel(
+                                image: adModel.user.image,
+                                adModel: adModel,
+                                receiverId: adModel.user.id,
+                                title: adModel.user.firstName+" "+adModel.user.lastName,
+                                room:id?? int.tryParse("${adModel.id}${userController.userModel.id}${adModel.user.id}")
+                              ),)));
+                            },
                             child: Container(
                               margin: EdgeInsets.symmetric(horizontal: 4),
                               decoration: BoxDecoration(

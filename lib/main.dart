@@ -8,9 +8,9 @@ void main() {
        WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
+GlobalKey<NavigatorState>nav=GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
-GlobalKey<NavigatorState>nav=GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

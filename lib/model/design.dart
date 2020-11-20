@@ -34,7 +34,7 @@ Color shadeColor(Color color, double factor) => Color.fromRGBO(
     shadeValue(color.blue, factor),
     1);
 class AppDesign{
-Color green=Color(0xff136934);
+Color green=Colors.blue;
 Color greenOp=Color(0xffCFE1D6);
 Color white=Colors.white;
 Color black = Color(0xff101010);
