@@ -253,7 +253,7 @@ class CustomAdCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
-      height: MediaQuery.of(context).size.width / 3 - 10,
+      height: MediaQuery.of(context).size.width / 3 ,
       decoration: BoxDecoration(
         color: appDesign.white,
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -281,8 +281,8 @@ class CustomAdCard extends StatelessWidget {
                           : adModel.images.first
                       : "https://cdn.wallpapersafari.com/35/57/5Qupky.png",
                 ),
-                width: MediaQuery.of(context).size.width / 3 - 10,
-                height: MediaQuery.of(context).size.width / 3 - 10,
+                width: MediaQuery.of(context).size.width / 3 -20,
+                height: MediaQuery.of(context).size.width / 3,
                 fit: BoxFit.fill,
               ),
             ),
