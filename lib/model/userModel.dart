@@ -80,7 +80,7 @@ class UserModel {
     if(json.data['data']['ads']!=null)
     {
       for(Map<String,dynamic>ad in json.data['data']['ads'])
-      _ads.add(AdModel.fromJson(ad,card: true));
+      _ads.add(AdModel.fromSearchList(ad));
     }
     return UserModel(
         id: json.data['data']["id"],

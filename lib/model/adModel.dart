@@ -71,6 +71,29 @@ class AdModel {
       this.image,
       this.createdAt,
       this.title});
+
+      factory AdModel.fromSearchList(Map<String, dynamic> json, {bool card}){
+    List<String> _images = [];
+    if (json['images'] != null) {
+      for (var image in json['images']) _images.add(image.toString());
+    }
+return AdModel(
+   id: int.tryParse(json['id'].toString()),
+        city: card != null
+            ? CityModel(name: json['city'])
+            : CityModel.fromJson(json['city']),
+        images: _images,
+        bath:json['bath'],
+        landType: json['land_type'],
+        lat:double.tryParse(json['lat'].toString()),
+        lng:double.tryParse(json['lng'].toString()),
+        meterPrice:double.tryParse(json['meter_price'].toString()),
+        propertyType: json['property_type'],
+        room: json['room'],
+        price: double.tryParse(json['price'].toString()) ?? 0,
+        createdAt: json['created_at'],
+        title: json['title']);
+      }
   factory AdModel.fromJson(Map<String, dynamic> json, {bool card}) {
     List<AdModel> _similar = [];
     List<String> _images = [];

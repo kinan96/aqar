@@ -24,16 +24,15 @@ class _AllAdsPageState extends State<AllAdsPage> {
   }
 
   _search() async {
-    List ads = await homeBodyController.search(sc: _sc);
+    List<AdModel> ads = await homeBodyController.search(sc: _sc);
     if (ads != null && mounted) {
       setState(() {
-        _ads = ads[1];
+        _ads = ads;
       });
     }
   }
 
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
-  List<Widget> _allAds = [];
   List<AdModel> _ads;
   @override
   Widget build(BuildContext context) {

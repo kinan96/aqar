@@ -41,8 +41,8 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 onPressed: () async {
                   searchBodyController
                       .changesearchCityIdFilter(_city[index].id);
-                                          searchBodyController.changemapZoom(11);
-                    _mapController.move(_city[index].latLng, 11);
+                  searchBodyController.changemapZoom(11);
+                  _mapController.move(_city[index].latLng, 11);
 
                   if (mounted)
                     setState(() {
@@ -50,14 +50,14 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                       searchBodyController.changeloading(true);
                       searchBodyController.changebackToCities(true);
                     });
-                  List ads = await homeBodyController.search(
+                  List<AdModel> ads = await homeBodyController.search(
                       cityId: _city[index].id, sc: _sc);
                   searchBodyController.changeloading(false);
                   setState(() {
                     _markers = List.generate(
-                        ads[1].length,
+                        ads.length,
                         (index) => homeMarker(
-                            adModel: ads[1][index],
+                            adModel: ads[index],
                             connect: true,
                             context: context,
                             hasStatus: false,
@@ -77,12 +77,6 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
   DateTime _now;
   DateTime _nextTime;
-  // Future<Position> _getCurrentLocation() async {
-  //   Position position =
-  //       await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-  //   return position;
-  // }
   MapController _mapController = MapController();
   LatLng _center = LatLng(24.774265, 46.738586);
   List<Marker> _markers = [];
@@ -296,85 +290,148 @@ class CustomAdCard extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomText(
-                          adModel != null ? adModel.title : "",
-                          size: 20,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  CustomText(
-                    adModel != null
-                        ? adModel.username ??
-                            "${adModel.user.firstName} ${adModel.user.lastName}"
-                        : "",
-                    size: 14,
-                    maxLines: 1,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                   Row(
                           children: [
-                            Icon(
-                              Icons.location_on,
-                              color: appDesign.hint,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
                             Expanded(
-                              child: Text(
-                                adModel != null ? adModel.city.name : "",
+                              child: CustomText(
+                                adModel != null ? adModel.title : "",
+                                size: 20,
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: appDesign.hint,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            adModel != null ? adModel.price.toString() : "0.0",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
+                        SizedBox(height: 2,),
+                  Expanded(
+                    child: Row(
+                      children: [
+                       
+                        Expanded(
+                          child: adModel.meterPrice == null
+                              ? Column(
+                                  children: [
+                                    TitleAndDiscripWidget(
+                                      titleText: "Number of Rooms",
+                                      discripText: adModel.room,
+                                      heightSpace: 0,
+                                                                            discripSize: 14,
+
+                                      titleSize: 11,
+                                    ),
+                                    TitleAndDiscripWidget(
+                                      titleText: "Number of Baths",
+                                      titleSize: 11,
+                                                                            discripSize: 14,
+
+                                      heightSpace: 0,
+                                      discripText: adModel.bath,
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                     TitleAndDiscripWidget(
+                                      titleText: "Meter Price",
+                                      discripText: adModel.meterPrice.toString(),
+                                      heightSpace: 0,
+                                                                            discripSize: 14,
+
+                                      titleSize: 11,
+                                    ),
+                                    TitleAndDiscripWidget(
+                                      titleText: "Land Type",
+                                      titleSize: 11,
+                                      heightSpace: 0,
+                                      discripSize: 14,
+                                      discripText: adModel.landType,
+                                    ),
+                                  ],
+                                ),
+                        ),
+                         Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                           
+                            
+                              Row(
+                                children: [
+                                  Text(
+                                   "for ",
+                                   style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                  ),
+                                  Expanded(
+                                    child: CustomText(
+                                      adModel != null ? adModel.propertyType ?? "" : "",
+                                      size: 14,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ), Spacer(),   Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: appDesign.hint,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      adModel != null ? adModel.city.name : "",
+                                      maxLines: 1,
+                                    
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        height: 1,
+                                        color: appDesign.hint,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Spacer(),
+                           
+                                    Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    adModel != null
+                                        ? adModel.price.toString()
+                                        : "0.0",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 19,
+                                    ),
+                                  ),SizedBox(width: 5,),
+                                  Text(
+                                   adModel.propertyType=="Rent"?"S.R/Year" :"S.R",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            "S.R",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  )
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ))
