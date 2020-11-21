@@ -109,6 +109,7 @@ class _HomeState extends State<Home> {
                   _pageIndex == 0||_pageIndex==2
                       ? CustomTextFormField(
                           controller: _searchCTL,
+                          newValidate: (v){return null;},
                           onSaved: (v) async {
                             searchBodyController.changeloading(true);
                             List<AdModel> ads = await homeBodyController.search(
