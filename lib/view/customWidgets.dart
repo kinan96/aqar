@@ -1047,8 +1047,9 @@ class _CustomAdImageSliderState extends State<CustomAdImageSlider> {
 
 class PriceRow extends StatelessWidget {
   String price;
+  bool rent;
   PriceRow({
-    this.price,
+    this.price,this.rent,
     Key key,
   }) : super(key: key);
 
@@ -1072,7 +1073,7 @@ class PriceRow extends StatelessWidget {
           width: 2,
         ),
         Text(
-          "S.R",
+        rent!=null?"S.R/Year":  "S.R",
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.bold,
@@ -1118,6 +1119,7 @@ this.area,
                 children: [
                   PriceRow(
                     price: "$price",
+                    rent: propertyType=="Rent"?true:null,
                   ),
                  
                 ],
