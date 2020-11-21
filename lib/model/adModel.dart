@@ -100,7 +100,7 @@ return AdModel(
     List<CommentModel> _comments = [];
     if (json['similar_ads'] != null) {
       for (Map<String, dynamic> ad in json['similar_ads'])
-        _similar.add(AdModel.fromJson(ad));
+        _similar.add(AdModel.fromSearchList(ad));
     }
     if (json['comments'] != null) {
       for (Map<String, dynamic> comment in json['comments'])
