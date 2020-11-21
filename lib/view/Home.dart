@@ -2,6 +2,7 @@ import 'package:aqar/controller/baseUrl.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
+import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/allAdsPage.dart';
 import 'package:aqar/view/chat.dart';
@@ -110,16 +111,16 @@ class _HomeState extends State<Home> {
                           controller: _searchCTL,
                           onSaved: (v) async {
                             searchBodyController.changeloading(true);
-                            List ads = await homeBodyController.search(
+                            List<AdModel> ads = await homeBodyController.search(
                                 cityId: searchBodyController.searchCityIdFilter,
                                 title: _searchCTL.text,
                                 sc: _scaffold);
                             searchBodyController.changeloading(false);
                             searchBodyController.changebackToCities(true);
                             List<Marker> _markers = List.generate(
-                                ads[1].length,
+                                ads.length,
                                 (index) => homeMarker(
-                                    adModel: ads[1][index],
+                                    adModel: ads[index],
                                     connect: true,
                                     context: context,
                                     hasStatus: false,
