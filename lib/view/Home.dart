@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
             scaffold: _scaffold,
           ),
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(_pageIndex == 0 ? 120 : 60),
+            preferredSize: Size.fromHeight(_pageIndex == 0||_pageIndex==2 ? 120 : 60),
             child: Container(
               color: Colors.blue,
               child: Column(
@@ -105,7 +105,7 @@ class _HomeState extends State<Home> {
                       ),
                     ],
                   ),
-                  _pageIndex == 0
+                  _pageIndex == 0||_pageIndex==2
                       ? CustomTextFormField(
                           controller: _searchCTL,
                           onSaved: (v) async {

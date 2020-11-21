@@ -50,7 +50,7 @@ class _SignInState extends State<SignIn> {
   }
 
   _chooseScreen() async {
-    await _fcm_listener(_firebaseMessaging,flutterLocalNotificationsPlugin);
+    await _fcm_listener(_firebaseMessaging, flutterLocalNotificationsPlugin);
   }
 
   String _email;
@@ -238,11 +238,14 @@ onNotifi(NavigatorState navigatorState, String json) async {
                     room: notificationModel
                         .notificationBodyModel.messageModel.room,
                     receiverId: notificationModel
-                        .notificationBodyModel.messageModel.receiver.id,
-                    title: notificationModel
-                        .notificationBodyModel.messageModel.receiver.userName,
+                        .notificationBodyModel.messageModel.sender.id,
+                    title: notificationModel.notificationBodyModel.messageModel
+                            .sender.firstName +
+                        " " +
+                        notificationModel.notificationBodyModel.messageModel
+                            .sender.lastName,
                     image: notificationModel
-                        .notificationBodyModel.messageModel.receiver.image),
+                        .notificationBodyModel.messageModel.sender.image),
               ))));
     else if (notificationModel.notificationBodyModel.adModel != null &&
         notificationModel.notificationBodyModel.status == "comment")
@@ -258,6 +261,7 @@ onNotifi(NavigatorState navigatorState, String json) async {
 
 Future<void> _showNotification(Map<String, dynamic> notifi,
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
+  print("$notifi");
   final android = AndroidNotificationDetails(
       'channel id', 'channel name', 'channel description',
       playSound: true,
@@ -275,7 +279,7 @@ Future<void> _showNotification(Map<String, dynamic> notifi,
         int.tryParse(notifi['data']["id"].toString()) ?? 0, // notification id
         //  notifi['data'].length>0?    notifi['data']['title']:
         notifi['data']['status'] == "chat"
-            ? "${notifi['data']['chat']['sender']['username']}"
+            ? "${notifi['data']['chat']['sender']['first_name']} ${notifi['data']['chat']['sender']['last_name']}"
             : "${notifi['data']["title"].toString()} ", //بواسطة ${userController.userModel.type.id==1? notifi['data']["adModel"]['provider']['name']:notifi['data']["adModel"]['user']['name']}
         // notifi['data'].length>0?   notifi['data']['body']:
         notifi['data']['status'] == "chat"
@@ -296,18 +300,20 @@ Future _fcm_listener(FirebaseMessaging _firebaseMessaging,
       onResume: (Map<String, dynamic> message) async =>
           onPushNotification(message, flutterLocalNotificationsPlugin),
       onBackgroundMessage: Platform.isIOS ? null : onBackGroundNotification);
-  await _firebaseMessaging.getToken().then((String token) async{
+  await _firebaseMessaging.getToken().then((String token) async {
     assert(token != null);
     deviceInfo.changedeviceId(token);
     deviceInfo.changeplateform(Platform.operatingSystem);
     print("Push Messaging token: $token/////${Platform.operatingSystem}");
-        List<String> userData;
+    List<String> userData;
     userData = await getSharedListOfStringOfKey("savedUser");
-    if (userData != null){
+    if (userData != null) {
       await userController.signIn(
-          nav.currentContext, userData[0], userData[1],
-          );}
-
+        nav.currentContext,
+        userData[0],
+        userData[1],
+      );
+    }
   });
   _firebaseMessaging.subscribeToTopic("matchscore");
 }
@@ -354,6 +360,8 @@ Future<dynamic> onPushNotification(Map<String, dynamic> message,
         fcmNotificationModel.notificationBodyModel != null &&
         fcmNotificationModel.notificationBodyModel.status == "chat" &&
         fcmNotificationModel.notificationBodyModel.messageModel != null &&
+        fcmNotificationModel.notificationBodyModel.messageModel.receiver.id ==
+            userController.userModel.id &&
         chatController.openedChatId ==
             fcmNotificationModel.notificationBodyModel.messageModel.room) {
       List<Widget> _currentChat = chatController.openedChatMessagesWidgets;
@@ -367,13 +375,24 @@ Future<dynamic> onPushNotification(Map<String, dynamic> message,
       chatController.chatRefreshController.position.jumpTo(
           chatController.chatRefreshController.position.maxScrollExtent);
     } else {
-      await _showNotification(_finalMessage, flutterLocalNotificationsPlugin);
+      if (fcmNotificationModel != null &&
+          fcmNotificationModel.notificationBodyModel != null &&
+          fcmNotificationModel.notificationBodyModel.status == "chat"&&
+           fcmNotificationModel.notificationBodyModel.messageModel.receiver.id ==
+            userController.userModel.id&&(
+              chatController.openedChatId==null||
+               chatController.openedChatId !=
+            fcmNotificationModel.notificationBodyModel.messageModel.room
+            )
+          )
+        await _showNotification(_finalMessage, flutterLocalNotificationsPlugin);
     }
   }
 }
 
 Future<dynamic> onBackGroundNotification(Map<String, dynamic> message) async {
   print(message);
+  notificationController.changefromBackGround(true);
   FCMNotificationModel fcmNotificationModel;
   Map<String, dynamic> _finalMessage;
   try {
@@ -399,6 +418,8 @@ Future<dynamic> onBackGroundNotification(Map<String, dynamic> message) async {
         fcmNotificationModel.notificationBodyModel != null &&
         fcmNotificationModel.notificationBodyModel.status == "chat" &&
         fcmNotificationModel.notificationBodyModel.messageModel != null &&
+        fcmNotificationModel.notificationBodyModel.messageModel.receiver.id ==
+            userController.userModel.id &&
         chatController.openedChatId ==
             fcmNotificationModel.notificationBodyModel.messageModel.room) {
       List<Widget> _currentChat = chatController.openedChatMessagesWidgets;
@@ -411,7 +432,16 @@ Future<dynamic> onBackGroundNotification(Map<String, dynamic> message) async {
       await Future.delayed(Duration(milliseconds: 100));
       chatController.chatRefreshController.position.jumpTo(
           chatController.chatRefreshController.position.maxScrollExtent);
-    } else {
+    } else if (fcmNotificationModel != null &&
+        fcmNotificationModel.notificationBodyModel != null &&
+        fcmNotificationModel.notificationBodyModel.status == "chat"&&
+           fcmNotificationModel.notificationBodyModel.messageModel.receiver.id ==
+            userController.userModel.id&&(
+              chatController.openedChatId==null||
+               chatController.openedChatId !=
+            fcmNotificationModel.notificationBodyModel.messageModel.room
+            )
+        ) {
       print("kkk");
       FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
           FlutterLocalNotificationsPlugin();
@@ -433,7 +463,7 @@ Future<dynamic> onBackGroundNotification(Map<String, dynamic> message) async {
                 0, // notification id
             //  notifi['data'].length>0?    notifi['data']['title']:
             _finalMessage['data']['status'] == "chat"
-                ? "${_finalMessage['data']['chat']['sender']['username']}"
+                ? "${_finalMessage['data']['chat']['sender']['first_name']} ${_finalMessage['data']['chat']['sender']['last_name']}"
                 : "${_finalMessage['data']["title"].toString()} ", //بواسطة ${userController.userModel.type.id==1? notifi['data']["adModel"]['provider']['name']:notifi['data']["adModel"]['user']['name']}
             // notifi['data'].length>0?   notifi['data']['body']:
             _finalMessage['data']['status'] == "chat"

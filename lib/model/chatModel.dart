@@ -12,7 +12,7 @@ AdModel adModel;
   ChatModel(
       {this.room,this.title,this.receiverId, this.image, this.adModel, this.published, this.lastMsg,});
   factory ChatModel.fromJson(Map<String, dynamic> chat) {
-    print("ffffffffffffffffffffffffffff${chat['receiver_id']}");
+    print("ffffffffffff${chat['receiver_id']}ffffffffffffffff${chat['room']}");
     return ChatModel(
         room: chat['room'],
         title: chat['title'],

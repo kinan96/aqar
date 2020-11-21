@@ -61,24 +61,27 @@ class _AllChatsState extends State<AllChats> {
                       )
                     : SingleChildScrollView(
                       child: Column(
-                        children:List.generate(_chats.length, (i) => Slidable(
-                          child:    ChatTile(chatModel: _chats[i]),
-                                  actionPane: SlidableDrawerActionPane(),
-                                  actions: [
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.delete_forever,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () async {
-                                          await chatController.deletChatContact(
-                                              context, _chats[i].room);
-                                          if (mounted)
-                                            setState(() {
-                                              _chats.removeAt(i);
-                                            });
-                                        })
-                                  ]),
+                        children:List.generate(_chats.length, (i) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Slidable(
+                            child:    ChatTile(chatModel: _chats[_chats.length-(i+1)]),
+                                    actionPane: SlidableDrawerActionPane(),
+                                    actions: [
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () async {
+                                            await chatController.deletChatContact(
+                                                context, _chats[_chats.length-(i+1)].room);
+                                            if (mounted)
+                                              setState(() {
+                                                _chats.removeAt(_chats.length-(i+1));
+                                              });
+                                          })
+                                    ]),
+                        ),
                                 
                         )
                       

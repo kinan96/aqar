@@ -128,7 +128,7 @@ class _FilterState extends State<Filter> {
                 toStream: filterController.roomToStream,
                 changeTo: filterController.changeroomTo,
                 title: "Number Of Rooms",
-                childrenType: "Year",
+                childrenType: "",
                 titleIcon: Icons.room,
               ),
               CustomFromToPicker(
@@ -141,7 +141,7 @@ class _FilterState extends State<Filter> {
                 toStream: filterController.bathToStream,
                 changeTo: filterController.changebathTo,
                 title: "Number Of Baths",
-                childrenType: "Year",
+                childrenType: "",
                 titleIcon: Icons.airline_seat_legroom_normal,
               ),
               BooleanTile(

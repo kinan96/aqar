@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aqar/controller/baseUrl.dart';
 import 'package:aqar/controller/chatController.dart';
 import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/chatModel.dart';
@@ -23,13 +24,15 @@ import 'chat.dart';
 class ChatPage extends StatefulWidget {
   ChatModel chatModel;
   String from;
-  ChatPage({this.chatModel,this.from});
+  ChatPage({this.chatModel, this.from});
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
   initState() {
+    print(deviceInfo.deviceId);
+    print(userController.userModel.apiToken);
     print(chatController.openedChatId);
     _refreshController = RefreshController();
     chatController.changechatRefreshController(_refreshController);
@@ -40,14 +43,13 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   RefreshController _refreshController;
-  int _count=0;
+  int _count = 0;
   _loadMessages() async {
-    List _chat = await chatController.getChatMessages(
-        widget.chatModel.room);
+    List _chat = await chatController.getChatMessages(widget.chatModel.room);
     if (mounted)
       setState(() {
-        _count=_chat[0];
-    
+        _count = _chat[0];
+
         _chatMessages = List.generate(
                 _chat[1].length,
                 (index) => CustomChatMessageWidget(
@@ -63,26 +65,26 @@ class _ChatPageState extends State<ChatPage> {
   bool godown = false;
   bool start = true;
   _loadMoreMessages() async {
-    if(_chatMessages.length<_count){
-    List _chat = await chatController.getChatMessages(
-       widget.chatModel.room,skip: _chatMessages.length);
-    if (mounted)
-      setState(() {
-        _count=_chat[0];
-        List<Widget> _oldMessages = _chatMessages;
-        _chatMessages = List.generate(
-                _chat[1].length,
-                (index) => CustomChatMessageWidget(
-                      loaded: true,
-                      chatMessageModel: _chat[1][index],
-                    )) ??
-            [];
-        _chatMessages.addAll(_oldMessages);
-      });
-    chatController.changeopenedChatMessagesWidgets(_chatMessages);
-    _scrollController.jumpTo(_scrollController.position.minScrollExtent);
-    chatController.chatRefreshController.refreshCompleted();
-  }
+    if (_chatMessages.length < _count) {
+      List _chat = await chatController.getChatMessages(widget.chatModel.room,
+          skip: _chatMessages.length);
+      if (mounted)
+        setState(() {
+          _count = _chat[0];
+          List<Widget> _oldMessages = _chatMessages;
+          _chatMessages = List.generate(
+                  _chat[1].length,
+                  (index) => CustomChatMessageWidget(
+                        loaded: true,
+                        chatMessageModel: _chat[1][index],
+                      )) ??
+              [];
+          _chatMessages.addAll(_oldMessages);
+        });
+      chatController.changeopenedChatMessagesWidgets(_chatMessages);
+      _scrollController.jumpTo(_scrollController.position.minScrollExtent);
+      chatController.chatRefreshController.refreshCompleted();
+    }
   }
 
   List<Widget> _chatMessages = [
@@ -103,11 +105,10 @@ class _ChatPageState extends State<ChatPage> {
               chatController.chatRefreshController.position.maxScrollExtent);
           _message.text = "";
           _chatMessages.add(CustomChatMessageWidget(
-
             chatMessageModel: ChatMessageModel(
-              ad: widget.chatModel.adModel,
-              receiver:UserModel(id:  widget.chatModel.receiverId ),
-              room: widget.chatModel.room,
+                ad: widget.chatModel.adModel,
+                receiver: UserModel(id: widget.chatModel.receiverId),
+                room: widget.chatModel.room,
                 id: widget.chatModel.room,
                 message: text,
                 sender: userController.userModel,
@@ -124,7 +125,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   ScrollController _scrollController = ScrollController();
   @override
@@ -133,20 +133,26 @@ class _ChatPageState extends State<ChatPage> {
       onWillPop: () async {
         chatController.changeopenedChatId(null);
         chatController.changeopenedChatMessagesWidgets(null);
-      widget.from=="owner"?
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AdOwnerPage(adModel: widget.chatModel.adModel,))):
-         widget.from=="ad"?
-                 Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AdPage(adModel: widget.chatModel.adModel,))):
-
-         
-            
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Home(
-              index: 3,
-            )))
-            ;
+        widget.from == "owner"
+            ? Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AdOwnerPage(
+                          adModel: widget.chatModel.adModel,
+                        )))
+            : widget.from == "ad"
+                ? Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AdPage(
+                              adModel: widget.chatModel.adModel,
+                            )))
+                : Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Home(
+                              index: 3,
+                            )));
 
         return Future.value(false);
       },
@@ -164,8 +170,8 @@ class _ChatPageState extends State<ChatPage> {
                       bottom: 15),
                   child: ChatAppBar(
                     from: widget.from,
-                      chatModel: widget.chatModel,
-                      ),
+                    chatModel: widget.chatModel,
+                  ),
                 ),
                 Expanded(
                     child: Padding(
@@ -184,8 +190,7 @@ class _ChatPageState extends State<ChatPage> {
                               ? controler.data
                               : _refreshController,
                           onRefresh: () async {
-                            if (start &&
-                                _chatMessages.length<_count) {
+                            if (start && _chatMessages.length < _count) {
                               if (mounted)
                                 setState(() {
                                   start = false;
@@ -227,7 +232,6 @@ class _ChatPageState extends State<ChatPage> {
                       key: _formKey,
                       child: Row(
                         children: [
-                    
                           Expanded(
                             child: TextFormField(
                               maxLines: 3,
@@ -237,7 +241,7 @@ class _ChatPageState extends State<ChatPage> {
                               textDirection: TextDirection.ltr,
                               decoration: InputDecoration(
                                   hintText: "Write your message here",
-                                  enabledBorder:InputBorder.none,
+                                  enabledBorder: InputBorder.none,
                                   disabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   errorBorder: InputBorder.none,
@@ -246,8 +250,10 @@ class _ChatPageState extends State<ChatPage> {
                                   border: InputBorder.none),
                             ),
                           ),
-                       SizedBox(width: 10,),
-                              InkWell(
+                          SizedBox(
+                            width: 10,
+                          ),
+                          InkWell(
                               child: Icon(
                                 Icons.send,
                                 color: appDesign.green,
@@ -301,17 +307,19 @@ class _CustomChatMessageWidgetState extends State<CustomChatMessageWidget> {
     print(widget.chatMessageModel.id);
     print(widget.chatMessageModel.ad.id);
     ChatMessageModel chatMessageModel = await chatController.sendChatMessage(
-        context, widget.chatMessageModel.ad.id,widget.chatMessageModel.receiver.id,widget.chatMessageModel.room,
-       text: widget.chatMessageModel.message);
-       if(mounted)
-    setState(() {
-      _chatMessageModel = chatMessageModel;
-      _sending = false;
-    });
+        context,
+        widget.chatMessageModel.ad.id,
+        widget.chatMessageModel.receiver.id,
+        widget.chatMessageModel.room,
+        text: widget.chatMessageModel.message);
+    if (mounted)
+      setState(() {
+        _chatMessageModel = chatMessageModel;
+        _sending = false;
+      });
   }
 
   bool _sending = true;
-
 
   @override
   Widget build(BuildContext context) {
@@ -319,34 +327,41 @@ class _CustomChatMessageWidgetState extends State<CustomChatMessageWidget> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          userController.userModel!=null&&  userController.userModel.id != widget.chatMessageModel.sender.id
-              ? SizedBox()
-              : InkWell(
+          userController.userModel != null &&
+                  userController.userModel.id ==
+                      widget.chatMessageModel.sender.id
+              ? InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   onTap: () {
-                    if (widget.chatMessageModel.sender.id==  userController.userModel.id)
-                    
+                    if (widget.chatMessageModel.sender.id ==
+                        userController.userModel.id)
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => EditProfile()));
-                 else
+                    else
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AdOwnerPage(adModel: widget.chatMessageModel.ad,id: widget.chatMessageModel.room,)));
+                          builder: (context) => AdOwnerPage(
+                                adModel: widget.chatMessageModel.ad,
+                                id: widget.chatMessageModel.room,
+                              )));
                   },
                   child: Container(
-                    width: 40,height: 40,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(90)),
                         image: DecorationImage(
-                            image: NetworkImage(
-userController.userModel.image                            ),
+                            image: NetworkImage(userController.userModel.image),
                             fit: BoxFit.fill)),
                   ),
-                ),
-                SizedBox(width: 5,),
+                ): SizedBox()
+              ,
+          SizedBox(
+            width: 5,
+          ),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-          widget.chatMessageModel.sender.id==userController.userModel.id
+              crossAxisAlignment: widget.chatMessageModel.sender.id ==
+                      userController.userModel.id
                   ? CrossAxisAlignment.start
                   : CrossAxisAlignment.end,
               children: [
@@ -354,24 +369,29 @@ userController.userModel.image                            ),
                   margin: EdgeInsets.only(left: 5, bottom: 5, top: 5),
                   padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   decoration: BoxDecoration(
-                    boxShadow: [BoxShadow(blurRadius: 2,spreadRadius:0.01,color: appDesign.hint.withOpacity(0.3))],
-                      color:
-                       userController.userModel!=null&&  userController.userModel.id ==
-                              widget.chatMessageModel.sender.id
-    ? appDesign.white
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 2,
+                            spreadRadius: 0.01,
+                            color: appDesign.hint.withOpacity(0.3))
+                      ],
+                      color: userController.userModel != null &&
+                              userController.userModel.id ==
+                                  widget.chatMessageModel.sender.id
+                          ? appDesign.white
                           : appDesign.green,
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(
-                              userController.userModel!=null&&  userController.userModel.id ==
-                                      widget.chatMessageModel.sender.id
-        
-  ? 15
-                                  : 0),
                           topRight: Radius.circular(
-                              userController.userModel!=null&&  userController.userModel.id ==
-                                      widget.chatMessageModel.sender.id
-          
-  ? 0
+                              userController.userModel != null &&
+                                      userController.userModel.id ==
+                                          widget.chatMessageModel.sender.id
+                                  ? 15
+                                  : 0),
+                        topLeft: Radius.circular(
+                              userController.userModel != null &&
+                                      userController.userModel.id ==
+                                          widget.chatMessageModel.sender.id
+                                  ? 0
                                   : 15),
                           bottomLeft: Radius.circular(15),
                           bottomRight: Radius.circular(15))),
@@ -381,16 +401,16 @@ userController.userModel.image                            ),
                           backgroundColor: appDesign.green,
                         )
                       : Text(
-                              widget.chatMessageModel.message ?? "",
-                              textDirection: TextDirection.rtl,
-                              style: TextStyle(
-                                color:   userController.userModel!=null&&  userController.userModel.id !=
-                              widget.chatMessageModel.sender.id
-    ? appDesign.white
-                          : appDesign.green,
-                          fontWeight: FontWeight.w600
-                              ),
-                            ),
+                          widget.chatMessageModel.message ?? "",
+                          textDirection: TextDirection.rtl,
+                          style: TextStyle(
+                              color: userController.userModel != null &&
+                                      userController.userModel.id !=
+                                          widget.chatMessageModel.sender.id
+                                  ? appDesign.white
+                                  : appDesign.green,
+                              fontWeight: FontWeight.w600),
+                        ),
                 ),
                 _sending
                     ? Container(
@@ -411,32 +431,37 @@ userController.userModel.image                            ),
               ],
             ),
           ),
-          
-userController.userModel!=null&&  userController.userModel.id != widget.chatMessageModel.sender.id
+          SizedBox(width: 5,),
+          userController.userModel != null &&
+                  userController.userModel.id !=
+                      widget.chatMessageModel.sender.id
               ? InkWell(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   onTap: () {
-                    AdModel ad=widget.chatMessageModel.ad;
-                    ad.user=widget.chatMessageModel.sender;
-                        if (widget.chatMessageModel.sender.id== userController.userModel.id)
-                    
+                    AdModel ad = widget.chatMessageModel.ad;
+                    ad.user = widget.chatMessageModel.sender;
+                    if (widget.chatMessageModel.sender.id ==
+                        userController.userModel.id)
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => Home(index: 2,)));
-                 else
+                          builder: (context) => Home(
+                                index: 2,
+                              )));
+                    else
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AdOwnerPage(adModel:ad,id: widget.chatMessageModel.id,)));
-               
+                          builder: (context) => AdOwnerPage(
+                                adModel: ad,
+                                id: widget.chatMessageModel.id,
+                              )));
                   },
                   child: Container(
-                    width: 40,height: 40,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: appDesign.white,
+                        color: appDesign.white,
                         borderRadius: BorderRadius.all(Radius.circular(90)),
                         image: DecorationImage(
-                          
-                            image:  NetworkImage(
-widget.chatMessageModel.sender.image                     
-                            ),
+                            image: NetworkImage(
+                                widget.chatMessageModel.sender.image),
                             fit: BoxFit.fill)),
                   ),
                 )
@@ -450,7 +475,8 @@ widget.chatMessageModel.sender.image
 class ChatAppBar extends StatelessWidget {
   ChatModel chatModel;
   String from;
-  ChatAppBar({this.from,
+  ChatAppBar({
+    this.from,
     this.chatModel,
     Key key,
   }) : super(key: key);
@@ -464,44 +490,53 @@ class ChatAppBar extends StatelessWidget {
         children: [
           BackButton(
             color: appDesign.green,
-            onPressed: (){
-                    from=="owner"?
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AdOwnerPage(adModel: chatModel.adModel,id: chatModel.room,))):
-                     from=="ad"?
-                 Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => AdPage(adModel: chatModel.adModel,))):
-
-     
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Home(
-              index: 3,
-            )))
-            ;
+            onPressed: () {
+              from == "owner"
+                  ? Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdOwnerPage(
+                                adModel: chatModel.adModel,
+                                id: chatModel.room,
+                              )))
+                  : from == "ad"
+                      ? Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AdPage(
+                                    adModel: chatModel.adModel,
+                                  )))
+                      : Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Home(
+                                    index: 3,
+                                  )));
             },
           ),
-        
-        
           Expanded(
             child: CustomText(
-
-              chatModel.title
-,size: 18
-,              textAlign: TextAlign.start,
+              chatModel.title,
+              size: 18,
+              textAlign: TextAlign.start,
               maxLines: 1,
             ),
-          ),  SizedBox(
+          ),
+          SizedBox(
             width: 5,
-          ),  InkWell(
+          ),
+          InkWell(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             onTap: () {
-              if(userController.userModel!=null&&  userController.userModel.id!=chatModel.adModel.user.id)
+              if (userController.userModel != null &&
+                  userController.userModel.id != chatModel.adModel.user.id)
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AdOwnerPage(
+                          adModel: chatModel.adModel,
+                        )));
+              else
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AdOwnerPage(adModel: chatModel.adModel,)));
-                    else
-                                    Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => Home(index: 2)));
-
             },
             child: Container(
               width: 40,
@@ -509,10 +544,7 @@ class ChatAppBar extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   image: DecorationImage(
-                      image: NetworkImage(
-                                   chatModel.image
-                          ),
-                      fit: BoxFit.fill)),
+                      image: NetworkImage(chatModel.image), fit: BoxFit.fill)),
             ),
           ),
         ],

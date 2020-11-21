@@ -433,6 +433,7 @@ SizedBox(width: 10,),
       onReceiveProgress: (sent,total){
             progressRatio.changeprogressRatio("${(total/sent*100).toStringAsFixed(0)}");
           });
+          print(response);
 
       if (response.data['status'] == 200) {
           await removeSharedOfKey("savedUser");
