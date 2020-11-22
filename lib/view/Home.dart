@@ -1,4 +1,5 @@
 import 'package:aqar/controller/baseUrl.dart';
+import 'package:aqar/controller/filterController.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
@@ -111,11 +112,13 @@ class _HomeState extends State<Home> {
                           controller: _searchCTL,
                           newValidate: (v){return null;},
                           onSaved: (v) async {
+                            filterController.changetitle(v.isEmpty?"":v.toString().trim());
                             searchBodyController.changeloading(true);
                             List<AdModel> ads = await homeBodyController.search(
                                 cityId: searchBodyController.searchCityIdFilter,
                                 title: _searchCTL.text,
                                 sc: _scaffold);
+                                filterController.changeadsAfterFilter(ads);
                             searchBodyController.changeloading(false);
                             searchBodyController.changebackToCities(true);
                             List<Marker> _markers = List.generate(

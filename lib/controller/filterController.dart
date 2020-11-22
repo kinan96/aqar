@@ -1,6 +1,20 @@
+import 'package:aqar/model/adModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FilterController{
+  BehaviorSubject<List<AdModel>> _adsAfterFilter = BehaviorSubject<List<AdModel>>();
+  Function(List<AdModel>) get changeadsAfterFilter => _adsAfterFilter.sink.add;
+  List<AdModel> get adsAfterFilter => _adsAfterFilter.value;
+  Stream<List<AdModel>> get adsAfterFilterStream => _adsAfterFilter.stream;
+  
+  
+  BehaviorSubject<String> _title = BehaviorSubject<String>();
+  Function(String) get changetitle => _title.sink.add;
+  String get title => _title.value;
+  Stream<String> get titleStream => _title.stream;
+
+
+
   BehaviorSubject<String> _rentOrSale = BehaviorSubject<String>();
   Function(String) get changerentOrSale => _rentOrSale.sink.add;
   String get rentOrSale => _rentOrSale.value;
@@ -84,6 +98,7 @@ class FilterController{
 
   dispose(){
     _lift.close();
+    _adsAfterFilter.close();
     _kitchen.close();
     _pool.close();
 _priceFrom.close();

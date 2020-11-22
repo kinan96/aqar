@@ -33,7 +33,7 @@ class _AddAdPageState extends State<AddAdPage> {
   String _lift;
   String _kitchen;
   String _familyOrSingle;
-  String _VillaOrApartment;
+  String _villaOrApartment;
   String _pool;
   String _garage;
   TextEditingController _price = TextEditingController();
@@ -54,7 +54,8 @@ class _AddAdPageState extends State<AddAdPage> {
     _kitchen = "Yes";
     _lift = "Yes";
     _familyOrSingle = "Family";
-    _VillaOrApartment = "Villa";
+    if(widget.type!="Land")
+    _villaOrApartment = "Villa";
     _pool = "Yes";
     _garage = "Yes";
     if (widget.adModel != null) {
@@ -67,7 +68,7 @@ class _AddAdPageState extends State<AddAdPage> {
       _lift = widget.adModel.lift;
       _garage = widget.adModel.garage;
       _pool = widget.adModel.pool;
-      _VillaOrApartment = widget.adModel.buildingType;
+      _villaOrApartment = widget.adModel.buildingType;
       _familyOrSingle = widget.adModel.socialStatus;
       _nearPlaces = TextEditingController(text: widget.adModel.nearPlaces);
       _title = TextEditingController(text: widget.adModel.title);
@@ -398,13 +399,20 @@ class _AddAdPageState extends State<AddAdPage> {
                           height: 10,
                         ),  CustomTextFormField(
                           lable: "Area in M2",
-                        
+                          newValidate: (v){
+                            if(v.isEmpty)
+                            return "This field can\'t be empty";
+                            else if(double.tryParse(v)==null)
+                            return "Please enter only numbers";
+                            else return null;
+                          },
                           prefixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: Icon(Icons.add_location,
                                 color: Colors.lightBlue),
                           ),
                           controller: _area,
+                          textInputType: TextInputType.number,
                           onValidate: emptyValidate,
                         ),
                         SizedBox(
@@ -556,23 +564,23 @@ class _AddAdPageState extends State<AddAdPage> {
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         NormalradioButton(
-                                          groupKind: _VillaOrApartment,
+                                          groupKind: _villaOrApartment,
                                           kind: "Villa",
                                           text: "Villa",
                                           onTap: () {
                                             setState(() {
-                                              _VillaOrApartment = "Villa";
+                                              _villaOrApartment = "Villa";
                                             });
                                           },
                                         ),
                                         // Spacer(),
                                         NormalradioButton(
-                                          groupKind: _VillaOrApartment,
+                                          groupKind: _villaOrApartment,
                                           kind: "Apartment",
                                           text: "Apartment",
                                           onTap: () {
                                             setState(() {
-                                              _VillaOrApartment = "Apartment";
+                                              _villaOrApartment = "Apartment";
                                             });
                                           },
                                         )
@@ -819,9 +827,9 @@ class _AddAdPageState extends State<AddAdPage> {
                         familyOrSingle: _familyOrSingle != null
                             ? _familyOrSingle.trim()
                             : null,
-                        VillaOrapartment: _VillaOrApartment != null
-                            ? _VillaOrApartment.trim()
-                            : null,
+                        buildingType: _villaOrApartment != null
+                            ? _villaOrApartment.trim()
+                            : "Land",
                         pool: _pool != null ? _pool.trim() : null,
                         garage: _garage != null ? _garage.trim() : null,
                         room: _room.text != null ? _room.text.trim() : null,

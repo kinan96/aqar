@@ -1,4 +1,5 @@
 import 'package:aqar/controller/adController.dart';
+import 'package:aqar/controller/filterController.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/design.dart';
@@ -27,6 +28,7 @@ class _AllAdsPageState extends State<AllAdsPage> {
     List<AdModel> ads = await homeBodyController.search(sc: _sc);
     if (ads != null && mounted) {
       setState(() {
+        filterController.changeadsAfterFilter(ads);
         _ads = ads;
       });
     }
@@ -41,9 +43,13 @@ class _AllAdsPageState extends State<AllAdsPage> {
         appBar:widget.noAppBar!=null?null: buildCustomAppBar(title: widget.title ?? "Ads Filter"),
         body: Padding(
           padding: EdgeInsets.only(top:widget.noAppBar!=null?20: 0, left: 20, right: 20, bottom: 20),
-          child: _ads == null
+          child:  StreamBuilder<List<AdModel>>(
+                    stream: filterController.adsAfterFilterStream,
+                    initialData: null,
+                    builder: (context, snapshot) {
+                      return snapshot.data == null
               ? Center(child: LoadingBouncingGrid.square())
-              : _ads.length == 0
+              : snapshot.data.length == 0
                   ? CustomText(
                       "No Ads yet",
                       size: 13,
@@ -51,12 +57,14 @@ class _AllAdsPageState extends State<AllAdsPage> {
                       color: appDesign.hint,
                     )
                   : ListView.separated(
-                      itemBuilder: (context, i) =>
-                          CustomAdCard(adModel: _ads[i]),
-                      separatorBuilder: (context, i) => SizedBox(
-                            height: 0,
-                          ),
-                      itemCount: _ads.length),
+                          itemBuilder: (context, i) =>
+                              CustomAdCard(adModel: snapshot.data[i]),
+                          separatorBuilder: (context, i) => SizedBox(
+                                height: 0,
+                              ),
+                          itemCount: snapshot.data.length);
+                    }
+                  ),
         ));
   }
 }
