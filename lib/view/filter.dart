@@ -5,9 +5,11 @@ import 'package:aqar/controller/searchBodyController.dart';
 import 'package:aqar/controller/signUpController.dart';
 import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/userModel.dart';
+import 'package:aqar/view/Home.dart';
 import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/addAdPage.dart';
 import 'package:aqar/view/customWidgets.dart';
+import 'package:aqar/view/homeBody.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -305,27 +307,8 @@ if(filterController.propertyType=="Villa"||filterController.propertyType=="Apart
           Expanded(
             child: InkWell(
               onTap: () async {
-                showLoadingProgressIndicator(context);
-                searchBodyController.changeloading(true);
-                List<AdModel> ads = await homeBodyController.search(
-                    cityId: searchBodyController.searchCityIdFilter,
-                    title: filterController.title,
-                    sc: _scaffold);
-                filterController.changeadsAfterFilter(ads);
-                searchBodyController.changeloading(false);
-                searchBodyController.changebackToCities(true);
-                List<Marker> _markers = List.generate(
-                    ads.length,
-                    (index) => _homeMarker(
-                        adModel: ads[index],
-                        connect: true,
-                        context: context,
-                        hasStatus: false,
-                        onPressed: () async {}));
-                searchBodyController.changesearchedListOfAdMarkers(_markers);
-                searchBodyController.changemapZoom(11);
-                Navigator.pop(context);
-                Navigator.pop(context);
+                     Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Home(index: 2,)));
+
               },
               child: Container(
                 alignment: Alignment.center,
@@ -364,27 +347,8 @@ if(filterController.propertyType=="Villa"||filterController.propertyType=="Apart
                 filterController.changegarage(null);
                 filterController.changepool(null);
                 filterController.changelift(null);
-                showLoadingProgressIndicator(context);
-                searchBodyController.changeloading(true);
-                List<AdModel> ads = await homeBodyController.search(
-                    cityId: searchBodyController.searchCityIdFilter,
-                    title: filterController.title,
-                    sc: _scaffold);
-                filterController.changeadsAfterFilter(ads);
-                searchBodyController.changeloading(false);
-                searchBodyController.changebackToCities(true);
-                List<Marker> _markers = List.generate(
-                    ads.length,
-                    (index) => _homeMarker(
-                        adModel: ads[index],
-                        connect: true,
-                        context: context,
-                        hasStatus: false,
-                        onPressed: () async {}));
-                searchBodyController.changesearchedListOfAdMarkers(_markers);
-                searchBodyController.changemapZoom(11);
-                Navigator.pop(context);
-                Navigator.pop(context);
+       Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=>Home(index: 2,)));
+
               },
               child: Container(
                 alignment: Alignment.center,
@@ -742,45 +706,3 @@ class CustomFromToPicker extends StatelessWidget {
   }
 }
 
-Marker _homeMarker(
-    {CityModel cityModel,
-    AdModel adModel,
-    Function onPressed,
-    bool connect,
-    bool hasStatus,
-    BuildContext context}) {
-  return Marker(
-    width: 50,
-    height: 50,
-    point:
-        adModel != null ? LatLng(adModel.lat, adModel.lng) : cityModel.latLng,
-    builder: (ctx) => InkWell(
-      onTap: adModel != null
-          ? () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => AdPage(
-                            adModel: adModel,
-                          )));
-            }
-          : onPressed,
-      child: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.all(5),
-          child: Text(
-            adModel != null ? "${adModel.price} S.R" : cityModel.name,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.deepPurple[900],
-                fontSize: 10,
-                fontWeight: FontWeight.bold),
-          ),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white),
-            color: Colors.blue[100],
-            borderRadius: BorderRadius.all(Radius.circular(90)),
-          )),
-    ),
-  );
-}

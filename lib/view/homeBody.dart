@@ -13,6 +13,7 @@ import 'package:latlong/latlong.dart';
 import 'package:loading_animations/loading_animations.dart';
 
 class HomeBody extends StatefulWidget {
+ 
   @override
   _HomeBodyState createState() => _HomeBodyState();
 }
@@ -214,6 +215,7 @@ Marker homeMarker(
     builder: (ctx) => InkWell(
       onTap: adModel != null
           ? () {
+            print("object");
               Navigator.push(
                   context,
                   MaterialPageRoute(

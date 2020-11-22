@@ -20,6 +20,7 @@ import 'addAdPage.dart';
 
 class Home extends StatefulWidget {
   int index;
+  
   Home({this.index});
   @override
   _HomeState createState() => _HomeState();
