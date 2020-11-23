@@ -195,7 +195,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               : TextDirection.ltr,
           minLines: 1,
           maxLines: widget.multiLine != null ? 6 : 1,
-          validator:widget.newValidate ?? emptyValidate,// widget.onValidate,
+          validator: widget.newValidate ?? emptyValidate, // widget.onValidate,
           keyboardType: widget.textInputType,
           textAlign: TextAlign.left,
           decoration: InputDecoration(
@@ -815,8 +815,7 @@ class CustomAdOwnerCard extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => EditProfile()))
-                            : 
-                            Navigator.push(
+                            : Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => AdOwnerPage(
@@ -855,42 +854,55 @@ class CustomAdOwnerCard extends StatelessWidget {
                     maxLines: 1,
                   ),
                   Spacer(),
-           Row(children: [
-
-
-    Expanded(
-      child: CustomText(
-                      adModel.user.email,
-                      size: 20,
-                      maxLines: 1,
+                  Row(children: [
+                    Expanded(
+                      child: CustomText(
+                        adModel.user.email,
+                        size: 20,
+                        maxLines: 1,
+                      ),
                     ),
-    ),
-SizedBox(width: 10,),                   InkWell(
-                            onTap:userController.userModel!=null&&  userController.userModel.id==adModel.user.id? null: () async {
-                              Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>ChatPage(
-                                from:adOwnerPage!=null?"owner":"ad" ,
-                                chatModel: ChatModel(
-                                image: adModel.user.image,
-                                adModel: adModel,
-                                receiverId: adModel.user.id,
-                                title: adModel.user.firstName+" "+adModel.user.lastName,
-                                room:id?? int.tryParse("${adModel.id}${userController.userModel.id}${adModel.user.id}")
-                              ),)));
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: userController.userModel != null &&
+                              userController.userModel.id == adModel.user.id
+                          ? null
+                          : () async {
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                      builder: (context) => ChatPage(
+                                            from: adOwnerPage != null
+                                                ? "owner"
+                                                : "ad",
+                                            chatModel: ChatModel(
+                                                image: adModel.user.image,
+                                                adModel: adModel,
+                                                receiverId: adModel.user.id,
+                                                title: adModel.user.firstName +
+                                                    " " +
+                                                    adModel.user.lastName,
+                                                room: id ??
+                                                    int.tryParse(
+                                                        "${adModel.id}${userController.userModel.id}${adModel.user.id}")),
+                                          )));
                             },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child:Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.chat,color: Colors.white,),
-                              )
+                      child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.chat,
+                              color: Colors.white,
                             ),
-                          ),
-           ])
-              
+                          )),
+                    ),
+                  ])
                 ],
               ),
             ))
@@ -1029,16 +1041,56 @@ class _CustomAdImageSliderState extends State<CustomAdImageSlider> {
                                 icon: Icons.share,
                                 onPressed: () async {
                                   if (widget.adModel != null) {
-                                    Share.share("${widget.adModel.title}\n${widget.adModel.note}\n${widget.adModel.price}\n${widget.adModel.city.name}\n${widget.adModel.district}\n${widget.adModel.street}\n${widget.adModel.user.mobile}\n${widget.adModel.user.email}");
+                                    Share.share(
+                                        "${widget.adModel.title}\n${widget.adModel.note}\n${widget.adModel.price}\n${widget.adModel.city.name}\n${widget.adModel.district}\n${widget.adModel.street}\n${widget.adModel.user.mobile}\n${widget.adModel.user.email}");
                                   }
                                 },
                               ),
-                           
                             ],
                           )
                   ],
                 ),
-              ))
+              )),
+          Positioned(
+            bottom: 40,
+            left: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  (widget.adModel!=null&&    widget.adModel.views!=null)? Text(
+                      widget.adModel.views.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox()
+                  ],
+                ), SizedBox(
+                      height:(widget.adModel!=null&& widget.adModel.published==null)?0:5,
+                    ),
+           (widget.adModel!=null&&     widget.adModel.published!=null)?  Text(
+                      widget.adModel.published??"",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox(),
+                     SizedBox(
+                      height:(widget.adModel!=null&& widget.adModel.updated==null)?0:5,
+                    ),
+            (   widget.adModel!=null&&    widget.adModel.updated!=null)?    Text(
+                      widget.adModel.updated??"",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox()
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -1049,7 +1101,8 @@ class PriceRow extends StatelessWidget {
   String price;
   bool rent;
   PriceRow({
-    this.price,this.rent,
+    this.price,
+    this.rent,
     Key key,
   }) : super(key: key);
 
@@ -1073,7 +1126,7 @@ class PriceRow extends StatelessWidget {
           width: 2,
         ),
         Text(
-        rent!=null?"S.R/Year":  "S.R",
+          rent != null ? "S.R/Year" : "S.R",
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.bold,
@@ -1094,7 +1147,7 @@ class AdHeaderDetails extends StatelessWidget {
     this.name,
     this.propertyType,
     this.price,
-this.area,
+    this.area,
     Key key,
   }) : super(key: key);
 
@@ -1119,9 +1172,8 @@ this.area,
                 children: [
                   PriceRow(
                     price: "$price",
-                    rent: propertyType=="Rent"?true:null,
+                    rent: propertyType == "Rent" ? true : null,
                   ),
-                 
                 ],
               )
             ],
@@ -1131,38 +1183,35 @@ this.area,
           ),
           Row(
             children: [
-           
-                  Expanded(
-                    flex: 9,
-                    child: TitleAndDiscripWidget(
-                                  titleText: "Type",
-                                  iconData: Icons.map,
-                                  titleColor: appDesign.hint,
-                                  titleSize: 15,
-                                  titleFontWeight: FontWeight.w600,
-                                  discripSize: 18,
-                                  discripFontWeight: FontWeight.bold,
-                                  discripText: propertyType,
-                                ),
-                  ),
-                                         SizedBox(
-                                width: 10,
-                              ),
-
-                              Expanded(
-                                flex: 3,
-                                child: TitleAndDiscripWidget(
-                                  titleText: "Area",
-                                  iconData: Icons.call_split,
-                                  titleColor: appDesign.hint,
-                                  titleSize: 15,
-                                  titleFontWeight: FontWeight.w600,
-                                  discripSize: 18,
-                                  discripFontWeight: FontWeight.bold,
-                                  discripText: area +" m2" ?? "",
-                                ),
-                              ),
-                            
+              Expanded(
+                flex: 9,
+                child: TitleAndDiscripWidget(
+                  titleText: "Type",
+                  iconData: Icons.map,
+                  titleColor: appDesign.hint,
+                  titleSize: 15,
+                  titleFontWeight: FontWeight.w600,
+                  discripSize: 18,
+                  discripFontWeight: FontWeight.bold,
+                  discripText: propertyType,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: 3,
+                child: TitleAndDiscripWidget(
+                  titleText: "Area",
+                  iconData: Icons.call_split,
+                  titleColor: appDesign.hint,
+                  titleSize: 15,
+                  titleFontWeight: FontWeight.w600,
+                  discripSize: 18,
+                  discripFontWeight: FontWeight.bold,
+                  discripText: area + " m2" ?? "",
+                ),
+              ),
             ],
           )
         ],

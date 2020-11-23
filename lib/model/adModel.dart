@@ -15,6 +15,7 @@ class AdModel {
       lift,
       room,
       bath,
+      updated,
       kitchen,
       socialStatus,//familyor
       buildingType,//Villaor
@@ -22,7 +23,7 @@ class AdModel {
       garage; // for general
   double meterPrice;
   String landType; // for land
-  int id;
+  int id,views;
   bool isFavourite;
   String image;
   List<String> images;
@@ -49,6 +50,8 @@ class AdModel {
       this.address,
       this.kitchen,
       this.landType,
+      this.views,
+      this.updated,
       this.meterPrice,
       this.lift,
       this.pool,
@@ -82,6 +85,9 @@ return AdModel(
         city: card != null
             ? CityModel(name: json['city'])
             : CityModel.fromJson(json['city']),
+                    views: int.tryParse(json['views'].toString()),
+        updated:json['updated'] ,
+
         images: _images,
         bath:json['bath'],
         landType: json['land_type'],
@@ -113,6 +119,8 @@ return AdModel(
 
     return AdModel(
         id: int.tryParse(json['id'].toString()),
+        views: int.tryParse(json['views'].toString()),
+        updated:json['updated'] ,
         city: card != null
             ? CityModel(name: json['city'])
             : CityModel.fromJson(json['city']),
