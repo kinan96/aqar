@@ -282,27 +282,7 @@ class ConfirmationCode extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: Text("كود التفعيل"),
             ),
-            // PinPut(
-            //   fieldsCount: 4,
-            //   fieldsAlignment: MainAxisAlignment.center,
-            //   submittedFieldDecoration: _pinPutDecoration.copyWith(
-            //     borderRadius: BorderRadius.circular(15.0),
-            //   ),
-            //   selectedFieldDecoration: _pinPutDecoration,
-            //   controller: _pinPutController,
-            //   validator: codeValidate,
-            //   focusNode: _pinPutFocusNode,
-            //   keyboardType: TextInputType.number,
-            //   eachFieldPadding: EdgeInsets.symmetric(horizontal: 20),
-            //   withCursor: true,
-            //   eachFieldMargin: EdgeInsets.symmetric(horizontal: 10),
-            //   textStyle: TextStyle(
-            //       decoration: TextDecoration.underline,
-            //       height: 2.5,
-            //       color: appDesign.black,
-            //       fontWeight: FontWeight.bold,
-            //       fontSize: 18),
-            // ),
+       
           ],
         ),
       ),

@@ -11,15 +11,6 @@ class HomeController{
   Function(bool) get changehasNewNotifi => _hasNewNotifi.sink.add;
   bool get hasNewNotifi => _hasNewNotifi.value;
   Stream<bool> get hasNewNotifiStream => _hasNewNotifi.stream;
-  Widget body(int index){
-    switch (index) {
-
-      case 0:return HomeBody();
-      break;
-
-      default:return HomeBody();
-    }
-  }
   dispose() {
     _selectedBNBItem.close();
     _hasNewNotifi.close();

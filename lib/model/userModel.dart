@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:aqar/controller/baseUrl.dart';
@@ -8,21 +7,6 @@ import 'package:latlong/latlong.dart';
 
 import 'adModel.dart';
 
-class Attachment {
-  int id;
-  String type;
-  String fileName;
-
-  String url;
-  Attachment({this.id, this.fileName, this.type, this.url});
-  factory Attachment.fromJson(Map<String, dynamic> json) {
-    return Attachment(
-        id: json['id'],
-        type: json['type'],
-        fileName: json['file_name'],
-        url: json['attachment']);
-  }
-}
 
 class UserModel {
   UserModel(
@@ -43,7 +27,7 @@ class UserModel {
       this.activationCode,
       this.imageFile,
       this.type,
-            this.userName,
+      this.userName,
       this.ads,
       this.totalRating,
       this.apiToken});
@@ -53,7 +37,6 @@ class UserModel {
   String firstName;
   String lastName;
   String userName;
-
   String apiToken;
   String deviceToken;
   File imageFile;
@@ -86,7 +69,6 @@ class UserModel {
         id: json.data['data']["id"],
         firstName: json.data['data']["first_name"],
                 type: json.data['data']["type"],
-
         lastName: json.data['data']["last_name"],
         userName: json.data['data']["username"],
         mobile: json.data['data']["mobile"],
@@ -101,8 +83,7 @@ class UserModel {
          CityModel(
             id: int.tryParse(json.data['data']["city_id"].toString()) ?? 0,
             name: userController.appCities[
-                int.tryParse(json.data['data']["city_id"].toString()) ?? 0]),
-        
+                int.tryParse(json.data['data']["city_id"].toString()) ?? 0]),  
         email: json.data['data']["email"],
         image: json.data['data']["image"],
         ads:_ads,

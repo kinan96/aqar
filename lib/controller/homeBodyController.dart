@@ -108,33 +108,6 @@ class HomeBodyController {
     }
   }
 
-  Future<List<String>> getSlider(BuildContext context) async {
-    try {
-      List<String> _images = [];
-      Response response = await Dio().get("$baseUrl/slider",
-          options: Options(
-              receiveDataWhenStatusError: true,
-              validateStatus: (i) => true), onReceiveProgress: (sent, total) {
-        progressRatio
-            .changeprogressRatio("${(sent / total * 100).toStringAsFixed(0)}");
-      });
-      if (response.data['status'] == 200) {
-        for (Map<String, dynamic> image in response.data['data'])
-          _images.add(image['image']);
-        return _images;
-      } else if (response.data['status'] == 400) {
-        showMSG(context, "Error", response.data['msg'].toString());
-      } else if (response.data['status'] == 401) {
-        await removeSharedOfKey("savedUser");
-
-        await userController.logOut(context);
-      }
-      return [];
-    } catch (e) {
-      print(e.toString());
-      return [];
-    }
-  }
 }
 
 HomeBodyController homeBodyController = HomeBodyController();

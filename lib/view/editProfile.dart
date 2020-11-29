@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:aqar/controller/signUpController.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';
@@ -114,7 +113,6 @@ class _EditProfileState extends State<EditProfile> {
                   Container(
                           width: MediaQuery.of(context).size.width / 3 + 20,
       height: (MediaQuery.of(context).size.width / 3) * 1.2 + 20,
-
                     child: Stack(
                       alignment: Alignment.topLeft,
                       children: [

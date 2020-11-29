@@ -1,5 +1,5 @@
 class SettingsModel{
-   String licence;
+  String licence;
   String android;
   String ios;
   String whatsapp;

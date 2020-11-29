@@ -3,7 +3,6 @@ import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
-import 'package:aqar/view/confirm.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:flutter/material.dart';

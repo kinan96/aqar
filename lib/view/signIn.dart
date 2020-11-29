@@ -17,7 +17,6 @@ import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/chatPage.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/signUp.dart';
-import 'package:aqar/view/splash.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';

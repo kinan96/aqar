@@ -4,16 +4,13 @@ import 'package:aqar/controller/shared_preferences_helper.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
-import 'package:aqar/view/confirm.dart';
 import 'package:aqar/view/signIn.dart';
-import 'package:aqar/view/splash.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rich_alert/rich_alert.dart';
 import 'package:rxdart/rxdart.dart';
-import 'homeController.dart';
 class UserController {
   BehaviorSubject<UserModel> _userModel = BehaviorSubject<UserModel>();
   Function(UserModel) get changeuserModel => _userModel.sink.add;
@@ -95,8 +92,6 @@ sc.currentState.showSnackBar(SnackBar(content: Text("${response.data['message']}
         user.activationCode =
             int.tryParse(response.data['data']["activation_code"].toString());
         userController.changeuserModel(user);
-        if(email!=null)
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=>Confirm(changePass: true,)));
       } else if (response.data['status'] == 400) {  
             Navigator.pop(context);
 
@@ -183,9 +178,6 @@ print(model.activationCode);
          await onNotifi();
          else
         if (model.activationCode != null&&model.activationCode.toString().length==4) {
-          print(model.activationCode);
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Confirm()));
         } else {
  Navigator.of(context).pushReplacement(
                       MaterialPageRoute(builder: (context) => Home()));
@@ -207,7 +199,7 @@ print(model.activationCode);
                     await removeSharedOfKey("savedUser");
 
                                           Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) =>Splash()));
+                      MaterialPageRoute(builder: (context) =>SignIn()));
           },
         ),
       )]);
@@ -271,9 +263,6 @@ Navigator.pop(context);
           userController.changeuserModel(model);
         if (model.activationCode != null&&model.activationCode.toString().length==4) {
                     print(model.activationCode);
-
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Confirm()));
         } else {
           
         showMSG(context, "Message", "Password Updated Succefully",
@@ -324,8 +313,6 @@ Navigator.pop(context);
         if (model.activationCode != null&&model.activationCode.toString().length==4) {
                     print(model.activationCode);
 
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Confirm()));
         } else {
           showMSG(context, "Alert", "Password updated successfully",
               richAlertType: RichAlertType.SUCCESS,actions:  [Container(
@@ -399,9 +386,6 @@ SizedBox(width: 10,),
 
         if (model.activationCode != null&&model.activationCode.toString().length==4) {
                print(model.activationCode);
-
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => Confirm()));
 
         } 
         return true;

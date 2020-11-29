@@ -2,10 +2,7 @@ import 'package:aqar/controller/shared_preferences_helper.dart';
 import 'package:aqar/model/notificationModel.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:rich_alert/rich_alert.dart';
 import 'package:rxdart/rxdart.dart';
-
 import 'base_url.dart';
 
 class NotificationController{
