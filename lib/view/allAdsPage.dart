@@ -1,9 +1,7 @@
-import 'package:aqar/controller/adController.dart';
 import 'package:aqar/controller/filterController.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/design.dart';
-import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/homeBody.dart';
 import 'package:flutter/material.dart';
