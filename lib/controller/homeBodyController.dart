@@ -40,6 +40,20 @@ class HomeBodyController {
       return null;
   }
 
+  int _intOfAge(int i) {
+    if(i==null)
+    return null;
+    else
+    if (i == 0)
+      return 0;
+    else if (i < 11)
+      return i;
+      else if(i<19)
+      return ((i-10)*5)+10;
+    else
+      return null;
+  }
+
   int _intOfMeterPrice(int i) {
     if(i==null)
     return null;
@@ -60,7 +74,7 @@ class HomeBodyController {
       int skip}) async {
     try {
       String _url =
-          "$baseUrl/ad?title=${title != null ? title.trim() : ""}&city_id=${(cityId == null || cityId == 0) ? "" : cityId}&building_type=${filterController.propertyType??""}&property_type=${filterController.rentOrSale??""}&min_price=${_intOfPrice(filterController.priceFrom)==0?"":_intOfPrice(filterController.priceFrom)??""}&max_price=${_intOfPrice(filterController.priceTo)==0?"":_intOfPrice(filterController.priceTo)??""}&min_bath=${filterController.bathFrom==0?"":filterController.bathFrom??""}&max_bath=${filterController.bathTo??""}&min_room=${filterController.roomFrom==0?"":filterController.roomFrom??""}&max_room=${filterController.roomTo??""}&min_meter_price=${_intOfMeterPrice(filterController.meterPriceFrom)==0?"":_intOfMeterPrice(filterController.meterPriceFrom)??""}&max_meter_price=${_intOfMeterPrice(filterController.meterPriceTo)??""}&min_area=${_intOfArea(filterController.areaFrom)==0?"":_intOfArea(filterController.areaFrom)??""}&max_area=${_intOfArea(filterController.areaTo)??""}&min_building_age=${filterController.ageFrom==0?"":filterController.ageFrom??""}&max_building_age=${filterController.ageTo??""}&social_status=${filterController.familyOrSingle==null?"":filterController.familyOrSingle}&lift=${filterController.lift==null?"":filterController.lift?"Yes":"No"}&garage=${filterController.garage==null?"":filterController.garage?"Yes":"No"}&pool=${filterController.pool==null?"":filterController.pool?"Yes":"No"}&kitchen=${filterController.kitchen==null?"":filterController.kitchen?"Yes":"No"}";
+          "$baseUrl/ad?title=${title != null ? title.trim() : ""}&city_id=${(cityId == null || cityId == 0) ? "" : cityId}&building_type=${filterController.propertyType??""}&property_type=${filterController.rentOrSale??""}&min_price=${_intOfPrice(filterController.priceFrom)==0?"":_intOfPrice(filterController.priceFrom)??""}&max_price=${_intOfPrice(filterController.priceTo)==0?"":_intOfPrice(filterController.priceTo)??""}&min_bath=${filterController.bathFrom==0?"":filterController.bathFrom??""}&max_bath=${filterController.bathTo??""}&min_room=${filterController.roomFrom==0?"":filterController.roomFrom??""}&max_room=${filterController.roomTo??""}&min_meter_price=${_intOfMeterPrice(filterController.meterPriceFrom)==0?"":_intOfMeterPrice(filterController.meterPriceFrom)??""}&max_meter_price=${_intOfMeterPrice(filterController.meterPriceTo)??""}&min_area=${_intOfArea(filterController.areaFrom)==0?"":_intOfArea(filterController.areaFrom)??""}&max_area=${_intOfArea(filterController.areaTo)??""}&min_building_age=${_intOfAge(filterController.ageFrom)==0?"":_intOfAge(filterController.ageFrom)??""}&max_building_age=${_intOfAge(filterController.ageTo)==0?"":_intOfAge(filterController.ageTo)??""}&social_status=${filterController.familyOrSingle==null?"":filterController.familyOrSingle}&lift=${filterController.lift==null?"":filterController.lift?"Yes":"No"}&garage=${filterController.garage==null?"":filterController.garage?"Yes":"No"}&pool=${filterController.pool==null?"":filterController.pool?"Yes":"No"}&kitchen=${filterController.kitchen==null?"":filterController.kitchen?"Yes":"No"}";
       List<AdModel> _adResult = [];
       print(_url);
       filterController.changeadsAfterFilter(null);

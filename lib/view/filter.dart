@@ -26,40 +26,16 @@ class _FilterState extends State<Filter> {
   String _propertyType;
   String _type;
   String _familyOrSingle;
-  Map<int, String> _ageMap = {
-    0: "Age",
-    1: "0-5",
-    2: "0-10",
-    3: "0-15",
-    4: "0-20",
-    5: "0-25",
-    6: "0-30",
-    7: "0-35",
-    8: "0-40",
-    9: "0-45",
-    10: "0-50"
-  };
-  List<DropdownMenuItem> _ageButtons = [];
-  int _ageId = 0;
-  _onAgeChange(val) {
-    setState(() {
-      _ageId = val;
-      if (val > 0) {
-        filterController.changeageTo(val * 5);
-        filterController.changeageFrom(0);
-      } else {
-        filterController.changeageTo(null);
-        filterController.changeageFrom(0);
-      }
-    });
-  }
+
 
   Map<int, String> _roomMap = {
     0: "Number Of Rooms",
-    1: "0-5",
-    2: "0-10",
-    3: "0-15",
-    4: "0-20"
+    1: "1",
+    2: "2",
+    3: "3",
+    4: "4",
+    5:"5",
+    6:"6+"
   };
   List<DropdownMenuItem> _roomButtons = [];
   int _roomId = 0;
@@ -67,21 +43,29 @@ class _FilterState extends State<Filter> {
     setState(() {
       _roomId = val;
       if (val > 0) {
-        filterController.changeroomTo(val * 5);
-        filterController.changeroomFrom(0);
+        if(val==6)
+        filterController.changeroomTo(null);
+        else
+        filterController.changeroomTo(val);
+        if(val==6)
+        filterController.changeroomFrom(null);
+        else
+        filterController.changeroomFrom(val);
       } else {
         filterController.changeroomTo(null);
-        filterController.changeroomFrom(0);
+        filterController.changeroomFrom(null);
       }
     });
   }
 
   Map<int, String> _bathMap = {
     0: "Number Of Baths",
-    1: "0-5",
-    2: "5-10",
-    3: "0-15",
-    4: "0-20"
+    1: "1",
+    2: "2",
+    3: "3",
+    4: "4",
+    5:"5",
+    6:"6+"
   };
   List<DropdownMenuItem> _bathButtons = [];
   int _bathId = 0;
@@ -89,11 +73,17 @@ class _FilterState extends State<Filter> {
     setState(() {
       _bathId = val;
       if (val > 0) {
-        filterController.changebathTo(val * 5);
-        filterController.changebathFrom(0);
+        if(val==6)
+        filterController.changebathTo(null);
+        else
+        filterController.changebathTo(val);
+        if(val==6)
+        filterController.changebathFrom(null);
+        else
+        filterController.changebathFrom(val);
       } else {
         filterController.changebathTo(null);
-        filterController.changebathFrom(0);
+        filterController.changebathFrom(null);
       }
     });
   }
@@ -101,29 +91,22 @@ class _FilterState extends State<Filter> {
   void initState() {
 if(filterController.propertyType=="Villa"||filterController.propertyType=="Apartment")
 {
-  for(int i=0;i<_ageMap.length;i++)
-  if(_ageMap[i]=="0-${filterController.ageTo}")
-  setState(() {
-    _ageId=i;
-  });
   for(int i=0;i<_roomMap.length;i++)
-  if(_roomMap[i]=="0-${filterController.roomTo}")
+  if(_roomMap[i]=="${filterController.roomTo}")
   setState(() {
     _roomId=i;
   });
   for(int i=0;i<_bathMap.length;i++)
-  if(_bathMap[i]=="0-${filterController.bathTo}")
+  if(_bathMap[i]=="${filterController.bathTo}")
   setState(() {
     _bathId=i;
   });
-
 }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _ageButtons = signUpController.builDropDownItem(_ageMap, _ageId);
     _roomButtons = signUpController.builDropDownItem(_roomMap, _roomId);
     _bathButtons = signUpController.builDropDownItem(_bathMap, _bathId);
     return Scaffold(
@@ -238,15 +221,21 @@ if(filterController.propertyType=="Villa"||filterController.propertyType=="Apart
                         ? SizedBox()
                         : Column(
                             children: [
-                              Card(
-                                elevation: 6,
-                                child: DecoratedDropDownButton(
-                                  isNotSelected: false,
-                                  items: _ageButtons,
-                                  value: _ageId,
-                                  onChange: _onAgeChange,
-                                ),
-                              ),
+                              CustomFromToPicker(
+                            from: 0,
+                            to: 18,
+                            step: 1,
+                            currentFrom: filterController.ageFrom,
+                            currentTo: filterController.ageTo,
+                            fromStream: filterController.ageFromStream,
+                            changeFrom: filterController.changeageFrom,
+                            centerText: "To",
+                            toStream: filterController.ageToStream,
+                            changeTo: filterController.changeageTo,
+                            title: "Age",
+                            childrenType: "Year",
+                            titleIcon: Icons.date_range,
+                          ),
                               SizedBox(
                                 height: 10,
                               ),
@@ -581,6 +570,16 @@ class CustomFromToPicker extends StatelessWidget {
     else
       return "5000 m2+";
   }
+  String _age(int i) {
+    if (i == 0)
+      return "0";
+    else if(i==1)
+    return "1 Year";  
+    else if (i < 11)
+      return "$i Years";
+    else
+      return "${((i-10)*5)+10} Years";
+  }
 
   String _meterPrice(int i) {
     if (i == 0)
@@ -643,6 +642,8 @@ class CustomFromToPicker extends StatelessWidget {
                             ? (i) => _area(int.parse(i))
                             : title == "Meter Price"
                                 ? (i) => _meterPrice(int.parse(i))
+                                : title == "Age"
+                                ? (i) => _age(int.parse(i))
                                 : (i) => "$i${i != "0" ? childrenType : ""}",
                     textStyle: TextStyle(
                         color: Colors.grey,
@@ -682,7 +683,9 @@ class CustomFromToPicker extends StatelessWidget {
                               ? (i) => _area(int.parse(i))
                               : title == "Meter Price"
                                   ? (i) => _meterPrice(int.parse(i))
-                                  : (i) => "$i${i != "0" ? childrenType : ""}",
+                                  :  title == "Age"
+                                ? (i) => _age(int.parse(i))
+                                : (i) => "$i${i != "0" ? childrenType : ""}",
                       textStyle: TextStyle(
                           color: Colors.grey,
                           fontWeight: FontWeight.w600,

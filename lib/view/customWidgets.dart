@@ -332,17 +332,17 @@ class DecoratedDropDownButton extends StatelessWidget {
       child: Stack(
         alignment: Alignment.centerLeft,
         children: [
-          DropdownButton(
-            items: items,
-            onChanged: onChange,
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.grey.withOpacity(0.6),
-            ),
-            underline: SizedBox(),
-            isExpanded: true,
-            value: value,
-          ),
+         DropdownButton(
+           items: items,
+           onChanged: onChange,
+           icon: Icon(
+             Icons.keyboard_arrow_down,
+             color: Colors.grey.withOpacity(0.6),
+           ),
+           underline: SizedBox(),
+           isExpanded: true,
+           value: value,
+         ),
         ],
       ),
     );

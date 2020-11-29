@@ -75,7 +75,7 @@ class _AddAdPageState extends State<AddAdPage> {
       _area = TextEditingController(text: widget.adModel.area);
       _district = TextEditingController(text: widget.adModel.district);
       _street = TextEditingController(text: widget.adModel.street);
-      _age = TextEditingController(text: widget.adModel.area);
+      _age = TextEditingController(text: widget.adModel.buildingAge);
       _room = TextEditingController(text: widget.adModel.room);
       _baths = TextEditingController(text: widget.adModel.bath);
       _landType = TextEditingController(text: widget.adModel.landType);
