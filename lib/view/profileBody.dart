@@ -5,7 +5,6 @@ import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/editProfile.dart';
 import 'package:aqar/view/homeBody.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
