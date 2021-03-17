@@ -22,15 +22,18 @@ class _ProfileBodyState extends State<ProfileBody> {
     _getProfile();
     super.initState();
   }
-  GlobalKey<ScaffoldState>_sc=GlobalKey<ScaffoldState>();
-  _getProfile()async{
-UserModel _user=await userController.showProfile(_sc, userController.userModel.id);
-if(mounted)
-setState(() {
-  _profile=_user;
-});
+
+  GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
+  _getProfile() async {
+    UserModel _user =
+        await userController.showProfile(_sc, userController.userModel.id);
+    if (mounted)
+      setState(() {
+        _profile = _user;
+      });
   }
-UserModel _profile;
+
+  UserModel _profile;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,51 +47,75 @@ UserModel _profile;
             children: [
               buildProfilePicture(context,
                   iconData: Icons.settings,
-                  imageURL: userController.userModel.image,
-                   onPressed: () {
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>EditProfile()));                  }),
+                  imageURL: userController.userModel.image, onPressed: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => EditProfile()));
+              }),
               SizedBox(
                 height: 10,
               ),
-            _profile==null?SizedBox():  CustomText(
-               "${userController.userModel.firstName} ${userController.userModel.lastName}"?? "",
-                size: 17,
-                textAlign: TextAlign.center,
-              ),
+              _profile == null
+                  ? SizedBox()
+                  : CustomText(
+                      "${userController.userModel.firstName} ${userController.userModel.lastName}" ??
+                          "",
+                      size: 17,
+                      textAlign: TextAlign.center,
+                    ),
               SizedBox(
                 height: 5,
               ),
-     _profile==null?SizedBox():         RattingProfile(
-                rate: userController.userModel.totalRating,
-              ),
-                            SizedBox(
+              _profile == null
+                  ? SizedBox()
+                  : RattingProfile(
+                      rate: userController.userModel.totalRating,
+                    ),
+              SizedBox(
                 height: 9,
               ),
-_profile==null?SizedBox():CustomText(userController.userModel.mobile??"",
-textDirection: TextDirection.ltr,
-color: appDesign.hint,textAlign: TextAlign.center,),
+              _profile == null
+                  ? SizedBox()
+                  : CustomText(
+                      userController.userModel.mobile ?? "",
+                      textDirection: TextDirection.ltr,
+                      color: appDesign.hint,
+                      textAlign: TextAlign.center,
+                    ),
               SizedBox(
                 height: 5,
               ),
-TitleAndDiscripWidget(
-  titleText: "My Properties",
-  titleSize: 15,
-  discripWidget: Column(children:_profile==null?[Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Center(child: LoadingBumpingLine.circle(),),
-  )] :_profile.ads.length==0? [CustomText("No ads yet",
-  textAlign:TextAlign.center,
-  color: appDesign.hint,
-  )]:List.generate(_profile.ads.length, (index) => CustomAdCard(adModel: _profile.ads[index],))
-  
-  ,),
-)
+              TitleAndDiscripWidget(
+                titleText: "My Properties",
+                titleSize: 15,
+                discripWidget: Column(
+                  children: _profile == null
+                      ? [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: LoadingBumpingLine.circle(),
+                            ),
+                          )
+                        ]
+                      : _profile.ads.length == 0
+                          ? [
+                              CustomText(
+                                "No ads yet",
+                                textAlign: TextAlign.center,
+                                color: appDesign.hint,
+                              )
+                            ]
+                          : List.generate(
+                              _profile.ads.length,
+                              (index) => CustomAdCard(
+                                    adModel: _profile.ads[index],
+                                  )),
+                ),
+              )
             ],
           ),
         ),
       ),
     );
   }
-
 }
-
