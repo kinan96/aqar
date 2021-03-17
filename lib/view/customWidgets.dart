@@ -10,10 +10,8 @@ import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
 import 'package:aqar/view/adOwnerPage.dart';
 import 'package:aqar/view/chatPage.dart';
-import 'package:aqar/view/pleaseSignUp.dart';
-import 'package:aqar/view/profileBody.dart';
+import 'package:aqar/view/editProfile.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -136,6 +134,7 @@ class CustomText extends StatelessWidget {
 
 class CustomTextFormField extends StatefulWidget {
   bool isPassword;
+  Function newValidate;
   TextEditingController controller;
   String lable;
   Widget prefixIcon;
@@ -153,6 +152,7 @@ class CustomTextFormField extends StatefulWidget {
       this.prefixIcon,
       this.isPassword,
       this.lable,
+      this.newValidate,
       this.onSaved,
       this.controller,
       this.textInputType,
@@ -195,7 +195,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
               : TextDirection.ltr,
           minLines: 1,
           maxLines: widget.multiLine != null ? 6 : 1,
-          validator: widget.onValidate,
+          validator: widget.newValidate ?? emptyValidate, // widget.onValidate,
           keyboardType: widget.textInputType,
           textAlign: TextAlign.left,
           decoration: InputDecoration(
@@ -282,27 +282,7 @@ class ConfirmationCode extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: Text("كود التفعيل"),
             ),
-            // PinPut(
-            //   fieldsCount: 4,
-            //   fieldsAlignment: MainAxisAlignment.center,
-            //   submittedFieldDecoration: _pinPutDecoration.copyWith(
-            //     borderRadius: BorderRadius.circular(15.0),
-            //   ),
-            //   selectedFieldDecoration: _pinPutDecoration,
-            //   controller: _pinPutController,
-            //   validator: codeValidate,
-            //   focusNode: _pinPutFocusNode,
-            //   keyboardType: TextInputType.number,
-            //   eachFieldPadding: EdgeInsets.symmetric(horizontal: 20),
-            //   withCursor: true,
-            //   eachFieldMargin: EdgeInsets.symmetric(horizontal: 10),
-            //   textStyle: TextStyle(
-            //       decoration: TextDecoration.underline,
-            //       height: 2.5,
-            //       color: appDesign.black,
-            //       fontWeight: FontWeight.bold,
-            //       fontSize: 18),
-            // ),
+       
           ],
         ),
       ),
@@ -332,17 +312,17 @@ class DecoratedDropDownButton extends StatelessWidget {
       child: Stack(
         alignment: Alignment.centerLeft,
         children: [
-          DropdownButton(
-            items: items,
-            onChanged: onChange,
-            icon: Icon(
-              Icons.keyboard_arrow_down,
-              color: Colors.grey.withOpacity(0.6),
-            ),
-            underline: SizedBox(),
-            isExpanded: true,
-            value: value,
-          ),
+         DropdownButton(
+           items: items,
+           onChanged: onChange,
+           icon: Icon(
+             Icons.keyboard_arrow_down,
+             color: Colors.grey.withOpacity(0.6),
+           ),
+           underline: SizedBox(),
+           isExpanded: true,
+           value: value,
+         ),
         ],
       ),
     );
@@ -486,11 +466,10 @@ class _CustomImageSliderState extends State<CustomImageSlider>
         child: ClipRRect(
           borderRadius:
               widget.borderRadius ?? BorderRadius.all(Radius.circular(25)),
-          child: ExtendedImage(
+          child: Image(
             image: NetworkImage(link),
             width: widget.width,
             fit: BoxFit.fitWidth,
-            enableLoadState: true,
           ),
         ),
       ));
@@ -551,7 +530,7 @@ class TitleAndDiscripWidget extends StatelessWidget {
   String titleText;
   Color titleColor;
   Color discrepColor;
-IconData iconData;
+  IconData iconData;
   double heightSpace;
   double discripSize;
   FontWeight discripFontWeight;
@@ -585,10 +564,16 @@ IconData iconData;
             children: [
               Row(
                 children: [
-                  iconData!=null?Padding(
-                    padding: const EdgeInsets.only(bottom:5.0,right: 5),
-                    child: Icon(iconData,color: Colors.blue,size: 18,),
-                  ):SizedBox(),
+                  iconData != null
+                      ? Padding(
+                          padding: const EdgeInsets.only(bottom: 5.0, right: 5),
+                          child: Icon(
+                            iconData,
+                            color: Colors.blue,
+                            size: 18,
+                          ),
+                        )
+                      : SizedBox(),
                   Expanded(
                     child: titleWidget ??
                         Text(
@@ -672,7 +657,7 @@ Center buildProfilePicture(BuildContext context,
                   border: Border.all(color: Colors.blue, width: 3)),
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: ExtendedImage(
+                child: Image(
                   image:
                       file != null ? FileImage(file) : NetworkImage(imageURL),
                   fit: BoxFit.fill,
@@ -780,66 +765,6 @@ class CustomAdOwnerCard extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  _textMe(String mobile) async {
-    String _mob;
-    if (mobile[0] == "0" || mobile[0] == "+")
-      _mob = mobile.substring(1);
-    else
-      _mob = mobile;
-    // Android
-    String uri = 'tel:+$_mob?body="السلام عليكم ورحمة الله وبركاته"';
-    print(_mob);
-    if (await canLaunch(uri)) {
-      await launch(uri);
-    } else {
-      // iOS
-      String uri = 'tel:00$_mob?body="السلام عليكم ورحمة الله وبركاته"';
-      if (await canLaunch(uri)) {
-        await launch(uri);
-      } else {}
-    }
-  }
-
-  _openWhatsapp(String mobile) async {
-    String _mob;
-    if (mobile[0] == "0" || mobile[0] == "+")
-      _mob = mobile.substring(1);
-    else
-      _mob = mobile;
-    // Android
-    String uri = 'https://wa.me/$_mob';
-    print(_mob);
-    if (await canLaunch(uri)) {
-      await launch(uri);
-    } else {
-      // iOS
-      String uri = 'https://wa.me/$_mob';
-      if (await canLaunch(uri)) {
-        await launch(uri);
-      } else {}
-    }
-  }
-
-  _callMe(String mobile) async {
-    String _mob;
-    if (mobile[0] == "0" || mobile[0] == "+")
-      _mob = mobile.substring(1);
-    else
-      _mob = mobile;
-    // Android
-    String uri = 'tel:+$_mob';
-    print(_mob);
-    if (await canLaunch(uri)) {
-      await launch(uri);
-    } else {
-      // iOS
-      String uri = 'tel:00$_mob';
-      if (await canLaunch(uri)) {
-        await launch(uri);
-      } else {}
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -869,8 +794,7 @@ class CustomAdOwnerCard extends StatelessWidget {
                             ? Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ProfileBody(
-                                        )))
+                                    builder: (context) => EditProfile()))
                             : Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -878,8 +802,7 @@ class CustomAdOwnerCard extends StatelessWidget {
                                           adModel: adModel,
                                         )));
                       },
-                child: ExtendedImage(
-                  enableLoadState: true,
+                child: Image(
                   image: NetworkImage(
                     adModel.user.image,
                   ),
@@ -893,7 +816,6 @@ class CustomAdOwnerCard extends StatelessWidget {
                 ),
               ),
             ),
-            
             Expanded(
                 child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -901,146 +823,66 @@ class CustomAdOwnerCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CustomText(
-                    adModel.user.firstName,
+                    adModel.user.firstName + " " + adModel.user.lastName,
                     size: 20,
                     maxLines: 1,
-                  ),                  Spacer(),
-
-                  Row(
-                    children: [
-                      RattingProfile(
-                        rate: adModel.user.totalRating,
-                        starSize: 15,
-                      ),
-                    ],
                   ),
                   Spacer(),
-                  // Expanded(
-                  //   flex: 2,
-                  //   child: Row(
-                  //     crossAxisAlignment: CrossAxisAlignment.end,
-                  //     children: [
-                  //       Icon(
-                  //         Icons.location_on,
-                  //         color: appDesign.hint,
-                  //         size: 18,
-                  //       ),
-                  //       SizedBox(
-                  //         width: 5,
-                  //       ),
-                  //       Expanded(
-                  //         child: Text(
-                  //           adModel.user.cityModel.name,
-                  //           maxLines: 1,
-                  //           overflow: TextOverflow.ellipsis,
-                  //           style: TextStyle(
-                  //             color: appDesign.hint,
-                  //             fontWeight: FontWeight.bold,
-                  //             fontSize: 14,
-                  //           ),
-                  //         ),
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
-                  // Spacer(),
-                  Expanded(
-                    flex: 4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: userController.userModel != null &&
-                                    userController.userModel.id ==
-                                        adModel.user.id
-                                ? null
-                                : () async {
-                                    await _callMe(adModel.user.mobile);
-                                  },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child:Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.call,color: Colors.white,),
-                              )
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: userController.userModel != null &&
-                                    userController.userModel.id ==
-                                        adModel.user.id
-                                ? null
-                                : () async {
-                                    await _openWhatsapp(adModel.user.mobile);
-                                  },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child:Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.phone_android,color: Colors.white,),
-                              )
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: userController.userModel != null &&
-                                    userController.userModel.id ==
-                                        adModel.user.id
-                                ? null
-                                : () async {
-                                    // if (userController.userModel == null)
-                                    //   showModalBottomSheet(
-                                    //       context: context,
-                                    //       builder: (context) => PleaseSignUp());
-                                    // else
-                                    //   Navigator.of(context)
-                                    //       .pushReplacement(MaterialPageRoute(
-                                    //           builder: (context) => ChatPage(
-                                    //                 from: adOwnerPage != null
-                                    //                     ? "owner"
-                                    //                     : "ad",
-                                    //                 chatModel: ChatModel(
-                                    //                     image:
-                                    //                         adModel.user.image,
-                                    //                     adModel: adModel,
-                                    //                     receiverId:
-                                    //                         adModel.user.id,
-                                    //                     title: adModel
-                                    //                         .user.firstName,
-                                    //                     room: id ??
-                                    //                         int.tryParse(
-                                    //                             "${adModel.id}${userController.userModel.id}${adModel.user.id}")),
-                                    //               )));
-                                    // await _textMe("+50222211");
-                                  },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child:Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Icon(Icons.chat,color: Colors.white,),
-                              )
-                            ),
-                          ),
-                        ),
-                      ],
+                  CustomText(
+                    adModel.user.mobile,
+                    size: 20,
+                    maxLines: 1,
+                  ),
+                  Spacer(),
+                  Row(children: [
+                    Expanded(
+                      child: CustomText(
+                        adModel.user.email,
+                        size: 20,
+                        maxLines: 1,
+                      ),
                     ),
-                  )
+                    SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: userController.userModel != null &&
+                              userController.userModel.id == adModel.user.id
+                          ? null
+                          : () async {
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                      builder: (context) => ChatPage(
+                                            from: adOwnerPage != null
+                                                ? "owner"
+                                                : "ad",
+                                            chatModel: ChatModel(
+                                                image: adModel.user.image,
+                                                adModel: adModel,
+                                                receiverId: adModel.user.id,
+                                                title: adModel.user.firstName +
+                                                    " " +
+                                                    adModel.user.lastName,
+                                                room: id ??
+                                                    int.tryParse(
+                                                        "${adModel.id}${userController.userModel.id}${adModel.user.id}")),
+                                          )));
+                            },
+                      child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.chat,
+                              color: Colors.white,
+                            ),
+                          )),
+                    ),
+                  ])
                 ],
               ),
             ))
@@ -1179,48 +1021,56 @@ class _CustomAdImageSliderState extends State<CustomAdImageSlider> {
                                 icon: Icons.share,
                                 onPressed: () async {
                                   if (widget.adModel != null) {
-                                    Share.share(widget.adModel.url);
+                                    Share.share(
+                                        "${widget.adModel.title}\n${widget.adModel.note}\n${widget.adModel.price}\n${widget.adModel.city.name}\n${widget.adModel.district}\n${widget.adModel.street}\n${widget.adModel.user.mobile}\n${widget.adModel.user.email}");
                                   }
                                 },
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              _fav == null
-                                  ? NormalSmallButton(
-                                      icon: Icons.hdr_strong,
-                                      color: Colors.grey)
-                                  : NormalSmallButton(
-                                      icon: _fav
-                                          ? Icons.favorite
-                                          : Icons.favorite_border,
-                                      onPressed: () async {
-                                        if (userController.userModel == null)
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (context) =>
-                                                  PleaseSignUp());
-                                        else {
-                                          bool _f = _fav;
-                                          print(_f);
-                                          setState(() {
-                                            _fav = null;
-                                          });
-                                          await adController.addToFav(context,
-                                              adId: widget.adModel.id,
-                                              status: _f);
-                                          setState(() {
-                                            _fav = !_f;
-                                          });
-                                        }
-                                      },
-                                      color: _fav ? Colors.red : null,
-                                    )
                             ],
                           )
                   ],
                 ),
-              ))
+              )),
+          Positioned(
+            bottom: 40,
+            left: 20,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.remove_red_eye,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  (widget.adModel!=null&&    widget.adModel.views!=null)? Text(
+                      widget.adModel.views.toString(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox()
+                  ],
+                ), SizedBox(
+                      height:(widget.adModel!=null&& widget.adModel.published==null)?0:5,
+                    ),
+           (widget.adModel!=null&&     widget.adModel.published!=null)?  Text(
+                      widget.adModel.published??"",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox(),
+                     SizedBox(
+                      height:(widget.adModel!=null&& widget.adModel.updated==null)?0:5,
+                    ),
+            (   widget.adModel!=null&&    widget.adModel.updated!=null)?    Text(
+                      widget.adModel.updated??"",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.grey),
+                    ):SizedBox()
+              ],
+            ),
+          )
         ],
       ),
     );
@@ -1229,8 +1079,10 @@ class _CustomAdImageSliderState extends State<CustomAdImageSlider> {
 
 class PriceRow extends StatelessWidget {
   String price;
+  bool rent;
   PriceRow({
     this.price,
+    this.rent,
     Key key,
   }) : super(key: key);
 
@@ -1254,7 +1106,7 @@ class PriceRow extends StatelessWidget {
           width: 2,
         ),
         Text(
-          "R.S",
+          rent != null ? "S.R/Year" : "S.R",
           style: TextStyle(
             color: Colors.blue,
             fontWeight: FontWeight.bold,
@@ -1269,11 +1121,13 @@ class PriceRow extends StatelessWidget {
 class AdHeaderDetails extends StatelessWidget {
   String name;
   String price;
-  String cat;
+  String area;
+  String propertyType;
   AdHeaderDetails({
     this.name,
-    this.cat,
+    this.propertyType,
     this.price,
+    this.area,
     Key key,
   }) : super(key: key);
 
@@ -1294,8 +1148,13 @@ class AdHeaderDetails extends StatelessWidget {
                     size: 18,
                     maxLines: 2,
                   )),
-              PriceRow(
-                price: "$price",
+              Column(
+                children: [
+                  PriceRow(
+                    price: "$price",
+                    rent: propertyType == "Rent" ? true : null,
+                  ),
+                ],
               )
             ],
           ),
@@ -1305,11 +1164,32 @@ class AdHeaderDetails extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomText(
-                  "$cat",
-                
-                  size: 15,
-                  fontWeight: FontWeight.bold,
+                flex: 9,
+                child: TitleAndDiscripWidget(
+                  titleText: "Type",
+                  iconData: Icons.map,
+                  titleColor: appDesign.hint,
+                  titleSize: 15,
+                  titleFontWeight: FontWeight.w600,
+                  discripSize: 18,
+                  discripFontWeight: FontWeight.bold,
+                  discripText: propertyType,
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                flex: 3,
+                child: TitleAndDiscripWidget(
+                  titleText: "Area",
+                  iconData: Icons.call_split,
+                  titleColor: appDesign.hint,
+                  titleSize: 15,
+                  titleFontWeight: FontWeight.w600,
+                  discripSize: 18,
+                  discripFontWeight: FontWeight.bold,
+                  discripText: area + " m2" ?? "",
                 ),
               ),
             ],
@@ -1329,7 +1209,7 @@ Future whenExitDialog(BuildContext context) {
           actions: [
             FlatButton(
                 child: Text(
-                  "إلغاء",
+                  "Cancel",
                   style: TextStyle(
                       color: appDesign.white, fontWeight: FontWeight.bold),
                 ),
@@ -1342,7 +1222,7 @@ Future whenExitDialog(BuildContext context) {
             ),
             FlatButton(
                 child: Text(
-                  "خروج",
+                  "Confirm",
                   style: TextStyle(
                       color: Colors.blue, fontWeight: FontWeight.bold),
                 ),
@@ -1351,8 +1231,8 @@ Future whenExitDialog(BuildContext context) {
                       .invokeMethod<void>('SystemNavigator.pop');
                 })
           ],
-          alertTitle: richTitle("هل تريد الخروج من التطبيق ؟"),
-          alertSubtitle: richSubtitle("سيتم الخروج من التطبيق بمجرد الموافقة"),
+          alertTitle: richTitle("Do you want to signOut ?"),
+          alertSubtitle: richSubtitle("You will signOut when you confirm"),
           alertType: RichAlertType.WARNING,
         );
       });
@@ -1448,10 +1328,8 @@ class _ImageViewerState extends State<ImageViewer> {
                   },
                   children: List.generate(
                       widget.images.length,
-                      (index) => ExtendedImage(
-                          mode: ExtendedImageMode.gesture,
-                          enableLoadState: true,
-                          image: NetworkImage(widget.images[index]))),
+                      (index) =>
+                          Image(image: NetworkImage(widget.images[index]))),
                 ),
               ),
               Padding(

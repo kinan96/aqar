@@ -1,13 +1,9 @@
-import 'package:aqar/controller/baseUrl.dart';
-import 'package:aqar/controller/base_url.dart';
 import 'package:aqar/controller/shared_preferences_helper.dart';
 import 'package:aqar/model/notificationModel.dart';
 import 'package:aqar/model/userModel.dart';
-import 'package:aqar/view/allNotificationsPage.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-import 'package:rich_alert/rich_alert.dart';
 import 'package:rxdart/rxdart.dart';
+import 'base_url.dart';
 
 class NotificationController{
     BehaviorSubject<int> _unReadNotifications =

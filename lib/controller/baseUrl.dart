@@ -97,7 +97,7 @@ builder: (context)=>RichAlertDialog(alertTitle: Text(title,
         width: MediaQuery.of(context).size.width-120,
 
         child: RaisedButton(
-          child:Text("حسناً"),
+          child:Text("Ok"),
           
           onPressed: (){
             Navigator.pop(context);

@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:aqar/controller/signUpController.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/Home.dart';
-import 'package:aqar/view/profileBody.dart';
 import 'package:aqar/view/updatePassword.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +87,7 @@ class _EditProfileState extends State<EditProfile> {
     _cityItems = signUpController.builDropDownItem(_cities, _cityId);
     return WillPopScope(
       onWillPop: (){
-        Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> ProfileBody()));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> Home()));
         return Future.value(false);
       },
       child: GestureDetector(
@@ -101,7 +99,7 @@ class _EditProfileState extends State<EditProfile> {
           appBar: buildCustomAppBar(
             title: "Edit Profile",
             onBack: (){
-                      Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> ProfileBody()));
+                      Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> Home()));
 
             }
           ),
@@ -115,7 +113,6 @@ class _EditProfileState extends State<EditProfile> {
                   Container(
                           width: MediaQuery.of(context).size.width / 3 + 20,
       height: (MediaQuery.of(context).size.width / 3) * 1.2 + 20,
-
                     child: Stack(
                       alignment: Alignment.topLeft,
                       children: [
@@ -294,7 +291,7 @@ class _EditProfileState extends State<EditProfile> {
                         Expanded(
                           child: RaisedButton(
                             onPressed: () {
-        Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> ProfileBody()));
+        Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=> Home()));
                             },
                             color: appDesign.bg,
                             child: Text("Cancel"),

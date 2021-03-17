@@ -2,12 +2,10 @@ import 'package:aqar/controller/adController.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
 import 'package:aqar/model/adModel.dart';
-import 'package:aqar/model/categoryModel.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +13,7 @@ import 'package:latlong/latlong.dart';
 import 'package:loading_animations/loading_animations.dart';
 
 class HomeBody extends StatefulWidget {
+ 
   @override
   _HomeBodyState createState() => _HomeBodyState();
 }
@@ -26,7 +25,7 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
   }
 
   _getCities() async {
-        searchBodyController.changebackToCities(false);
+    searchBodyController.changebackToCities(false);
     searchBodyController.changeloading(true);
     List<CityModel> _city = await userController.getListOfCites(_sc);
 
@@ -43,31 +42,34 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 onPressed: () async {
                   searchBodyController
                       .changesearchCityIdFilter(_city[index].id);
-                  _mapController.move(_city[index].latLng, 5);
+                  searchBodyController.changemapZoom(11);
+                  _mapController.move(_city[index].latLng, 11);
+
                   if (mounted)
                     setState(() {
                       _markers = [];
                       searchBodyController.changeloading(true);
                       searchBodyController.changebackToCities(true);
                     });
-                  List ads = await homeBodyController.search(
+                  List<AdModel> ads = await homeBodyController.search(
                       cityId: _city[index].id, sc: _sc);
-                      searchBodyController.changeloading(false);
+                  searchBodyController.changeloading(false);
                   setState(() {
                     _markers = List.generate(
-                        ads[1].length,
+                        ads.length,
                         (index) => homeMarker(
-                            adModel: ads[1][index],
+                            adModel: ads[index],
                             connect: true,
                             context: context,
                             hasStatus: false,
                             onPressed: () async {}));
+
                     searchBodyController
                         .changesearchedListOfAdMarkers(_markers);
                   });
                 }));
-                searchBodyController.changesearchedListOfAdMarkers(_markers);
-                                      searchBodyController.changebackToCities(false);
+        searchBodyController.changesearchedListOfAdMarkers(_markers);
+        searchBodyController.changebackToCities(false);
         _cityMarkers = _markers;
       });
   }
@@ -76,15 +78,8 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> _sc = GlobalKey<ScaffoldState>();
   DateTime _now;
   DateTime _nextTime;
-  // Future<Position> _getCurrentLocation() async {
-  //   Position position =
-  //       await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-
-  //   return position;
-  // }
   MapController _mapController = MapController();
   LatLng _center = LatLng(24.774265, 46.738586);
-  double _zoom = 4.5;
   List<Marker> _markers = [];
   @override
   Widget build(BuildContext context) {
@@ -121,30 +116,35 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                 initialData: false,
                 builder: (context, load) => Stack(
                       children: [
-                        StreamBuilder<List<Marker>>(
-                            stream: searchBodyController
-                                .searchedListOfAdMarkersStream,
-                            initialData: [],
-                            builder: (context, snapshot) {
-                              return FlutterMap(
-                                mapController: _mapController,
-                                options: new MapOptions(
-                                  center: _center,
-                                  zoom: _zoom,
-                                ),
-                                layers: [
-                                  new TileLayerOptions(
-                                      urlTemplate:
-                                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                      subdomains: ['a', 'b', 'c']),
-                                  new MarkerLayerOptions(
-                                      markers: snapshot.hasData &&
-                                              snapshot.data.length > 0
-                                          ? snapshot.data
-                                          : _markers),
-                                ],
-                              );
-                            }),
+                        StreamBuilder(
+                          stream: searchBodyController.mapZoomStream,
+                          initialData: 4.5,
+                          builder: (context, zoom) =>
+                              StreamBuilder<List<Marker>>(
+                                  stream: searchBodyController
+                                      .searchedListOfAdMarkersStream,
+                                  initialData: [],
+                                  builder: (context, snapshot) {
+                                    return FlutterMap(
+                                      mapController: _mapController,
+                                      options: new MapOptions(
+                                        center: _center,
+                                        zoom: zoom.data,
+                                      ),
+                                      layers: [
+                                        new TileLayerOptions(
+                                            urlTemplate:
+                                                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                            subdomains: ['a', 'b', 'c']),
+                                        new MarkerLayerOptions(
+                                            markers: snapshot.hasData &&
+                                                    snapshot.data.length > 0
+                                                ? snapshot.data
+                                                : _markers),
+                                      ],
+                                    );
+                                  }),
+                        ),
                         load.data
                             ? Center(
                                 child: LoadingBouncingGrid.circle(
@@ -161,37 +161,38 @@ class _HomeBodyState extends State<HomeBody> with TickerProviderStateMixin {
                             child: !back.data
                                 ? SizedBox()
                                 : IconButton(
-                                      icon:Container(
+                                    icon: Container(
                                         alignment: Alignment.center,
                                         padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(10))
-                                  ),
-                                  child:  Icon(
-                                        Icons.arrow_back_ios,
-                                        size: 25,
-                                        color: Colors.blue,
-                                      )),
-                                      onPressed: back.data
-                                          ? () {
-                                              searchBodyController
-                                                  .changesearchCityIdFilter(null);
-                                              searchBodyController
-                                                  .changesearchedListOfAdMarkers(
-                                                      _cityMarkers);
-                                              if (mounted)
-                                                setState(() {
-                                                  _mapController.move(
-                                                      _center, _zoom);
-                                                  searchBodyController
-                                                      .changebackToCities(false);
-                                                });
-                                            }
-                                          : null),
-                                ),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10))),
+                                        child: Icon(
+                                          Icons.arrow_back_ios,
+                                          size: 25,
+                                          color: Colors.blue,
+                                        )),
+                                    onPressed: back.data
+                                        ? () {
+                                            searchBodyController
+                                                .changesearchCityIdFilter(null);
+                                            searchBodyController
+                                                .changesearchedListOfAdMarkers(
+                                                    _cityMarkers);
+                                            if (mounted)
+                                              setState(() {
+                                                searchBodyController
+                                                    .changemapZoom(4.5);
+                                                _mapController.move(
+                                                    _center, 4.5);
+                                                searchBodyController
+                                                    .changebackToCities(false);
+                                              });
+                                          }
+                                        : null),
                           ),
-                        
+                        ),
                       ],
                     )),
           ),
@@ -212,14 +213,22 @@ Marker homeMarker(
     point:
         adModel != null ? LatLng(adModel.lat, adModel.lng) : cityModel.latLng,
     builder: (ctx) => InkWell(
-      onTap:adModel!=null?(){
-        // Navigator.push(context,MaterialPageRoute(builder: (context)=>AdPage(adModel: adModel,)));
-      }: onPressed,
+      onTap: adModel != null
+          ? () {
+            print("object");
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AdPage(
+                            adModel: adModel,
+                          )));
+            }
+          : onPressed,
       child: Container(
           alignment: Alignment.center,
           padding: EdgeInsets.all(5),
           child: Text(
-            adModel != null ? "${adModel.price} R.S" : cityModel.name,
+            adModel != null ? "${adModel.price} S.R" : cityModel.name,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: Colors.deepPurple[900],
@@ -246,7 +255,7 @@ class CustomAdCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 10),
-      height: MediaQuery.of(context).size.width / 3 - 10,
+      height: MediaQuery.of(context).size.width / 3 ,
       decoration: BoxDecoration(
         color: appDesign.white,
         borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -266,8 +275,7 @@ class CustomAdCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(15)),
-              child: ExtendedImage(
-                enableLoadState: true,
+              child: Image(
                 image: NetworkImage(
                   adModel != null
                       ? adModel.image != null
@@ -275,8 +283,8 @@ class CustomAdCard extends StatelessWidget {
                           : adModel.images.first
                       : "https://cdn.wallpapersafari.com/35/57/5Qupky.png",
                 ),
-                width: MediaQuery.of(context).size.width / 3 - 10,
-                height: MediaQuery.of(context).size.width / 3 - 10,
+                width: MediaQuery.of(context).size.width / 3 -20,
+                height: MediaQuery.of(context).size.width / 3,
                 fit: BoxFit.fill,
               ),
             ),
@@ -284,82 +292,148 @@ class CustomAdCard extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: CustomText(
-                          adModel != null ? adModel.title : "",
-                          size: 20,
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  CustomText(
-                    adModel != null ? adModel.username??"${adModel.user.firstName} ${adModel.user.lastName}" : "",
-                    size: 14,
-                    maxLines: 1,
-                  ),
-                  Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                   Row(
                           children: [
-                            Icon(
-                              Icons.location_on,
-                              color: appDesign.hint,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
                             Expanded(
-                              child: Text(
-                                adModel != null ? adModel.city.name : "",
+                              child: CustomText(
+                                adModel != null ? adModel.title : "",
+                                size: 20,
                                 maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: appDesign.hint,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            adModel != null ? adModel.price.toString() : "0.0",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.end,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                            ),
+                        SizedBox(height: 2,),
+                  Expanded(
+                    child: Row(
+                      children: [
+                       
+                        Expanded(
+                          child: adModel.meterPrice == null
+                              ? Column(
+                                  children: [
+                                    TitleAndDiscripWidget(
+                                      titleText: "Number of Rooms",
+                                      discripText: adModel.room,
+                                      heightSpace: 0,
+                                                                            discripSize: 14,
+
+                                      titleSize: 11,
+                                    ),
+                                    TitleAndDiscripWidget(
+                                      titleText: "Number of Baths",
+                                      titleSize: 11,
+                                                                            discripSize: 14,
+
+                                      heightSpace: 0,
+                                      discripText: adModel.bath,
+                                    ),
+                                  ],
+                                )
+                              : Column(
+                                  children: [
+                                     TitleAndDiscripWidget(
+                                      titleText: "Meter Price",
+                                      discripText: adModel.meterPrice.toString(),
+                                      heightSpace: 0,
+                                                                            discripSize: 14,
+
+                                      titleSize: 11,
+                                    ),
+                                    TitleAndDiscripWidget(
+                                      titleText: "Land Type",
+                                      titleSize: 11,
+                                      heightSpace: 0,
+                                      discripSize: 14,
+                                      discripText: adModel.landType,
+                                    ),
+                                  ],
+                                ),
+                        ),
+                         Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                           
+                            
+                              Row(
+                                children: [
+                                  Text(
+                                   "for ",
+                                   style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold),
+                                    maxLines: 1,
+                                  ),
+                                  Expanded(
+                                    child: CustomText(
+                                      adModel != null ? adModel.propertyType ?? "" : "",
+                                      size: 14,
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ), Spacer(),   Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.location_on,
+                                    color: appDesign.hint,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      adModel != null ? adModel.city.name : "",
+                                      maxLines: 1,
+                                    
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        height: 1,
+                                        color: appDesign.hint,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Spacer(),
+                           
+                                    Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    adModel != null
+                                        ? adModel.price.toString()
+                                        : "0.0",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.end,
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 19,
+                                    ),
+                                  ),SizedBox(width: 5,),
+                                  Text(
+                                   adModel.propertyType=="Rent"?"S.R/Year" :"S.R",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 10,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
                           ),
-                          Text(
-                            "R.S",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  )
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ))

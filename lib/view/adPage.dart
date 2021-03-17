@@ -11,9 +11,7 @@ import 'package:aqar/view/addAdPage.dart';
 import 'package:aqar/view/allAdComments.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:aqar/view/profileBody.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -29,91 +27,6 @@ class AdPage extends StatefulWidget {
 }
 
 class _AdPageState extends State<AdPage> {
-  Future _launchMapModalSheet(BuildContext context, {LatLng posotion}) {
-    return showModalBottomSheet(
-        context: context,
-        builder: (context) => Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  color: Colors.white),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (Platform.isIOS)
-                    RaisedButton(
-                        child: Text("Open with Apple Maps"),
-                        color: !Platform.isIOS ? appDesign.bg : Colors.blue,
-                        onPressed: () {
-                          _launchMap(context,
-                              scff: _sc,
-                              google: false,
-                              lat: posotion.latitude,
-                              lng: posotion.longitude);
-                        }),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  RaisedButton(
-                      child: Text("Open with Goolge Maps"),
-                      color: Platform.isIOS ? appDesign.bg : Colors.blue,
-                      onPressed: () {
-                        _launchMap(context,
-                            scff: _sc,
-                            google: true,
-                            lat: posotion.latitude,
-                            lng: posotion.longitude);
-                      }),
-                ],
-              ),
-            ));
-  }
-
-  _launchMap(BuildContext context,
-      {double lat,
-      double lng,
-      bool google,
-      GlobalKey<ScaffoldState> scff}) async {
-    var url = '';
-    var urlAppleMaps = '';
-    if (Platform.isAndroid) {
-      url = "https://www.google.com/maps/search/?api=1&query=${lat},${lng}";
-      if (await canLaunch(url)) {
-        await launch(url);
-      } else {
-        scff.currentState.showSnackBar(SnackBar(
-            content: Text(
-          "لا يمكن عرض العنوان في خرائط جوجل",
-          textAlign: TextAlign.right,
-        )));
-      }
-    } else {
-      urlAppleMaps = 'https://maps.apple.com/?q=$lat,$lng';
-      url = "comgooglemaps://?saddr=&daddr=$lat,$lng&directionsmode=driving";
-
-      if (google) {
-        if (await canLaunch(url)) {
-          await launch(url);
-        } else
-          scff.currentState.showSnackBar(SnackBar(
-              content: Text(
-            "لا يمكن عرض العنوان في خرائط جوجل",
-            textAlign: TextAlign.right,
-          )));
-      } else {
-        if (await canLaunch(urlAppleMaps)) {
-          await launch(urlAppleMaps);
-        } else {
-          scff.currentState.showSnackBar(SnackBar(
-              content: Text(
-            "لا يمكن عرض العنوان في خرائط أبل",
-            textAlign: TextAlign.right,
-          )));
-        }
-      }
-    }
-  }
-
   AdModel _adModel;
   List<String> _links;
   bool _fav;
@@ -143,9 +56,8 @@ class _AdPageState extends State<AdPage> {
                             position: i,
                           )));
             },
-            child: ExtendedImage(
+            child: Image(
               image: NetworkImage(_links[i]),
-              enableLoadState: true,
               fit: BoxFit.fill,
             ),
           ));
@@ -168,20 +80,38 @@ class _AdPageState extends State<AdPage> {
                 ? LinearProgressIndicator()
                 : Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20, bottom: 10),
-                        child: CustomText(
-                          "Main Details",
-                          color: Colors.blue,
-                          size: 20,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, bottom: 10),
+                              child: CustomText(
+                                "Main Details",
+                                color: Colors.blue,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(right: 20, bottom: 10),
+                            child: Text(
+                                _adModel.meterPrice == null
+                                    ? _adModel.buildingType
+                                    : "Land",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ),
+                        ],
                       ),
                       AdHeaderDetails(
                         price: _adModel.price.toString(),
                         name: _adModel.title,
-                        cat: _adModel.meterPrice == null
-                            ? _adModel.buildingType
-                            : "Land",
+                        area: _adModel.area,
+                        propertyType: _adModel.propertyType,
                       ),
                       Container(
                           padding: EdgeInsets.only(left: 20, right: 20),
@@ -200,16 +130,6 @@ class _AdPageState extends State<AdPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              TitleAndDiscripWidget(
-                                titleText: "Type",
-                                iconData: Icons.map,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.propertyType,
-                              ),
                               CustomText(
                                 "Special Details",
                                 color: Colors.blue,
@@ -218,32 +138,37 @@ class _AdPageState extends State<AdPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              widget.adModel.landType != null
-                                  ? Column(
+                              _adModel.meterPrice != null
+                                  ? Row(
                                       children: [
-                                        TitleAndDiscripWidget(
-                                          titleText: "Land Type",
-                                          iconData: Icons.landscape,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.landType,
+                                        Expanded(
+                                          child: TitleAndDiscripWidget(
+                                            titleText: "Land Type",
+                                            iconData: Icons.landscape,
+                                            titleColor: appDesign.hint,
+                                            titleSize: 15,
+                                            titleFontWeight: FontWeight.w600,
+                                            discripSize: 18,
+                                            discripFontWeight: FontWeight.bold,
+                                            discripText:
+                                                _adModel.landType ?? "",
+                                          ),
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Meter Price",
-                                          iconData: Icons.monetization_on,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText:
-                                              "${_adModel.meterPrice.toString()} R.S",
+                                        Expanded(
+                                          child: TitleAndDiscripWidget(
+                                            titleText: "Meter Price",
+                                            iconData: Icons.monetization_on,
+                                            titleColor: appDesign.hint,
+                                            titleSize: 15,
+                                            titleFontWeight: FontWeight.w600,
+                                            discripSize: 18,
+                                            discripFontWeight: FontWeight.bold,
+                                            discripText:
+                                                "${_adModel.meterPrice.toString()} S.R",
+                                          ),
                                         ),
                                         SizedBox(
                                           height: 10,
@@ -252,120 +177,190 @@ class _AdPageState extends State<AdPage> {
                                     )
                                   : Column(
                                       children: [
-                                        TitleAndDiscripWidget(
-                                          titleText: "Age",
-                                          iconData: Icons.assignment,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.buildingAge,
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Property Type",
+                                                iconData: Icons.location_city,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.buildingType ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: _adModel.propertyType ==
+                                                      "Rent"
+                                                  ? 10
+                                                  : 0,
+                                            ),
+                                            _adModel.propertyType == "Rent"
+                                                ? Expanded(
+                                                    child:
+                                                        TitleAndDiscripWidget(
+                                                      titleText:
+                                                          "Family or Single",
+                                                      titleColor:
+                                                          appDesign.hint,
+                                                      iconData: Icons.people,
+                                                      titleSize: 15,
+                                                      titleFontWeight:
+                                                          FontWeight.w600,
+                                                      discripSize: 18,
+                                                      discripFontWeight:
+                                                          FontWeight.bold,
+                                                      discripText: _adModel
+                                                              .socialStatus ??
+                                                          "",
+                                                    ),
+                                                  )
+                                                : SizedBox(),
+                                          ],
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Lift",
-                                          iconData: Icons.arrow_upward,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.lift,
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Age",
+                                                iconData: Icons.assignment,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.buildingAge ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Number of rooms",
+                                                iconData: Icons.room,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.room ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Number of baths",
+                                                iconData: Icons
+                                                    .airline_seat_legroom_normal,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.bath ?? "",
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(
                                           height: 10,
                                         ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Room",
-                                          iconData: Icons.room,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.room,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Bath",
-                                          iconData:
-                                              Icons.airline_seat_legroom_normal,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.bath,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Kitchen",
-                                          iconData: Icons.kitchen,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.kitchen,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Family or Single",
-                                          titleColor: appDesign.hint,
-                                          iconData: Icons.people,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.socialStatus,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Apartment Type",
-                                          iconData: Icons.location_city,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.buildingType,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Pool",
-                                          iconData: Icons.pool,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.pool,
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        TitleAndDiscripWidget(
-                                          titleText: "Garage",
-                                          iconData: Icons.directions_car,
-                                          titleColor: appDesign.hint,
-                                          titleSize: 15,
-                                          titleFontWeight: FontWeight.w600,
-                                          discripSize: 18,
-                                          discripFontWeight: FontWeight.bold,
-                                          discripText: _adModel.garage,
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Lift",
+                                                iconData: Icons.arrow_upward,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.lift ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Kitchen",
+                                                iconData: Icons.kitchen,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.kitchen ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Pool",
+                                                iconData: Icons.pool,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.pool ?? "",
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Expanded(
+                                              child: TitleAndDiscripWidget(
+                                                titleText: "Garage",
+                                                iconData: Icons.directions_car,
+                                                titleColor: appDesign.hint,
+                                                titleSize: 15,
+                                                titleFontWeight:
+                                                    FontWeight.w600,
+                                                discripSize: 18,
+                                                discripFontWeight:
+                                                    FontWeight.bold,
+                                                discripText:
+                                                    _adModel.garage ?? "",
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -380,102 +375,112 @@ class _AdPageState extends State<AdPage> {
                               SizedBox(
                                 height: 10,
                               ),
-                              TitleAndDiscripWidget(
-                                titleText: "Address",
-                                iconData: Icons.location_searching,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripWidget: CustomInkWell(
-                                  onTap: () async {
-                                    await _launchMapModalSheet(context,
-                                        posotion: LatLng(widget.adModel.lat,
-                                            widget.adModel.lng));
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on,
-                                        color: Colors.blue,
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        _adModel.address,
-                                        style: TextStyle(
-                                            height: 3,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15),
-                                      )
-                                    ],
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                        titleText: "Address",
+                                        iconData: Icons.location_searching,
+                                        titleColor: appDesign.hint,
+                                        titleSize: 15,
+                                        titleFontWeight: FontWeight.w600,
+                                        discripWidget: Text(
+                                          _adModel.address ?? "",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        )),
                                   ),
-                                ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                        titleText: "Near Places",
+                                        iconData: Icons.add_location,
+                                        titleColor: appDesign.hint,
+                                        titleSize: 15,
+                                        titleFontWeight: FontWeight.w600,
+                                        discripWidget: Text(
+                                          _adModel.nearPlaces ?? "",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15),
+                                        )),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              TitleAndDiscripWidget(
-                                titleText: "City",
-                                iconData: Icons.call_split,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.city.name,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                      titleText: "City",
+                                      iconData: Icons.call_split,
+                                      titleColor: appDesign.hint,
+                                      titleSize: 15,
+                                      titleFontWeight: FontWeight.w600,
+                                      discripSize: 18,
+                                      discripFontWeight: FontWeight.bold,
+                                      discripText: _adModel.city.name ?? "",
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                      titleText: "District",
+                                      iconData: Icons.call_split,
+                                      titleColor: appDesign.hint,
+                                      titleSize: 15,
+                                      titleFontWeight: FontWeight.w600,
+                                      discripSize: 18,
+                                      discripFontWeight: FontWeight.bold,
+                                      discripText: _adModel.district ?? "",
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
-                              TitleAndDiscripWidget(
-                                titleText: "Area",
-                                iconData: Icons.call_split,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.area,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                      titleText: "Street",
+                                      iconData: Icons.call_split,
+                                      titleColor: appDesign.hint,
+                                      titleSize: 15,
+                                      titleFontWeight: FontWeight.w600,
+                                      discripSize: 18,
+                                      discripFontWeight: FontWeight.bold,
+                                      discripText: _adModel.street ?? "",
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Expanded(
+                                    child: TitleAndDiscripWidget(
+                                      titleText: "Postal Code",
+                                      iconData: Icons.mail,
+                                      titleColor: appDesign.hint,
+                                      titleSize: 15,
+                                      titleFontWeight: FontWeight.w600,
+                                      discripSize: 18,
+                                      discripFontWeight: FontWeight.bold,
+                                      discripText: _adModel.postalCode ?? "",
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(
                                 height: 10,
-                              ),
-                              TitleAndDiscripWidget(
-                                titleText: "District",
-                                iconData: Icons.call_split,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.district,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              TitleAndDiscripWidget(
-                                titleText: "Street",
-                                iconData: Icons.call_split,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.street,
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              TitleAndDiscripWidget(
-                                titleText: "Postal Code",
-                                iconData: Icons.mail,
-                                titleColor: appDesign.hint,
-                                titleSize: 15,
-                                titleFontWeight: FontWeight.w600,
-                                discripSize: 18,
-                                discripFontWeight: FontWeight.bold,
-                                discripText: _adModel.postalCode,
                               ),
                               TitleAndDiscripWidget(
                                 titleText: "Ad Owner Details",
@@ -511,21 +516,19 @@ class _AdPageState extends State<AdPage> {
                                             Expanded(
                                                 child: FlatButton(
                                                     color: Colors.blue,
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      AddAdPage(
-                                                                        type: widget.adModel.meterPrice ==
-                                                                                null
-                                                                            ? "Property"
-                                                                            : "Land",
-                                                                        adModel:
-                                                                            _adModel,
-                                                                      )));
-                                                    },
+                                                    onPressed: _adModel == null
+                                                        ? null
+                                                        : () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            AddAdPage(
+                                                                              type: _adModel.meterPrice != null ? "Land" : "Property",
+                                                                              adModel: _adModel,
+                                                                            )));
+                                                          },
                                                     child: Text("Edit"))),
                                             SizedBox(
                                               width: 10,
@@ -719,37 +722,41 @@ class _AdPageCommentsState extends State<AdPageComments> {
                                   width: 10,
                                 ),
                                 InkWell(
-                                  onTap: () async {
-                                    if (_commntCTL.text == null ||
-                                        _commntCTL.text.trim().isEmpty)
-                                      Fluttertoast.showToast(
-                                          msg: "can\'t add empty comment");
+                                    onTap: () async {
+                                      if (_commntCTL.text == null ||
+                                          _commntCTL.text.trim().isEmpty)
+                                        Fluttertoast.showToast(
+                                            msg: "can\'t add empty comment");
 
-                                    if (_commntCTL.text != null &&
-                                        _commntCTL.text.trim().isNotEmpty) {
-                                      AdModel adModel =
-                                          await adController.addComment(context,
-                                              adId: widget.adModel.id,
-                                              comment: _commntCTL.text.trim());
-                                      if (mounted)
-                                        setState(() {
-                                          _comments = List.generate(
-                                              adModel.comments.length,
-                                              (index) => CustomCommentWidget(
-                                                    commentModel:
-                                                        adModel.comments[index],
-                                                    adModel: widget.adModel,
-                                                  ));
-                                          _commntCTL.clear();
-                                        });
-                                      await Future.delayed(
-                                          Duration(milliseconds: 100));
-                                      _scrollController.jumpTo(_scrollController
-                                          .position.maxScrollExtent);
-                                    }
-                                  },
-                                  child:Icon(Icons.send,color: Colors.blue,)
-                                )
+                                      if (_commntCTL.text != null &&
+                                          _commntCTL.text.trim().isNotEmpty) {
+                                        AdModel adModel = await adController
+                                            .addComment(context,
+                                                adId: widget.adModel.id,
+                                                comment:
+                                                    _commntCTL.text.trim());
+                                        if (mounted)
+                                          setState(() {
+                                            _comments = List.generate(
+                                                adModel.comments.length,
+                                                (index) => CustomCommentWidget(
+                                                      commentModel: adModel
+                                                          .comments[index],
+                                                      adModel: widget.adModel,
+                                                    ));
+                                            _commntCTL.clear();
+                                          });
+                                        await Future.delayed(
+                                            Duration(milliseconds: 100));
+                                        _scrollController.jumpTo(
+                                            _scrollController
+                                                .position.maxScrollExtent);
+                                      }
+                                    },
+                                    child: Icon(
+                                      Icons.send,
+                                      color: Colors.blue,
+                                    ))
                               ],
                             ),
                           ))
@@ -806,11 +813,10 @@ class _CustomCommentWidgetState extends State<CustomCommentWidget> {
                   },
                   child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
-                      child: ExtendedImage(
+                      child: Image(
                         image: NetworkImage(
                           widget.commentModel.user.image,
                         ),
-                        enableLoadState: true,
                         width: 60,
                         fit: BoxFit.fill,
                         height: 60,

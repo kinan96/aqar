@@ -1,11 +1,8 @@
 import 'package:aqar/controller/adController.dart';
-import 'package:aqar/controller/notificationController.dart';
 import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/design.dart';
-import 'package:aqar/model/notificationModel.dart';
 import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:aqar/view/notificationPage.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 

@@ -1,4 +1,3 @@
-import 'package:aqar/model/adModel.dart';
 
 class NotificationModel{
     int id;

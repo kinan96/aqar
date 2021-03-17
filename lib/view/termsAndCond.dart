@@ -29,10 +29,9 @@ setState(() {
         child: Padding(
           padding: const EdgeInsets.only(left: 20,right: 20,bottom: 20),
           child:_settingsModel==null? Center(child: LoadingBouncingGrid.square(),) :  Column(children: [
-          // SizedBox(height: 30,),
-            // CustomText("ما هي سياسة الخصوصية",size: 25,),
-            // SizedBox(height: 20,),
-            CustomText(_settingsModel.licence??""
+            CustomText(
+              
+              "Aqar Terms And Conditions"
             ,fontWeight: FontWeight.w600,maxLines: 999999999,
             )
           ],),

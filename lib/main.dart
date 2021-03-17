@@ -1,15 +1,15 @@
 import 'package:aqar/model/theme.dart';
+import 'package:aqar/view/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'view/splash.dart';
 void main() {
-    WidgetsFlutterBinding.ensureInitialized();
+       WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
+GlobalKey<NavigatorState>nav=GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
-GlobalKey<NavigatorState>nav=GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -18,7 +18,7 @@ GlobalKey<NavigatorState>nav=GlobalKey<NavigatorState>();
       theme: appTheme(),
       locale: Locale("en","US"),
       debugShowCheckedModeBanner: false,
-      home: Splash(title: "aqar",nav: nav,),
+      home: SignIn(nav: nav,),
       supportedLocales: [
         Locale( 'en' , 'US' ),
         Locale( 'ar' , 'SA' ),

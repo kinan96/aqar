@@ -1,4 +1,3 @@
-import 'package:aqar/controller/forgetPasswordController.dart';
 import 'package:aqar/controller/validators.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/model/userModel.dart';

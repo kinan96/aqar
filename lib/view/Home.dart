@@ -1,74 +1,33 @@
 import 'package:aqar/controller/baseUrl.dart';
+import 'package:aqar/controller/filterController.dart';
 import 'package:aqar/controller/homeBodyController.dart';
 import 'package:aqar/controller/homeController.dart';
 import 'package:aqar/controller/searchBodyController.dart';
-import 'package:aqar/model/categoryModel.dart';
+import 'package:aqar/model/adModel.dart';
 import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/allAdsPage.dart';
 import 'package:aqar/view/chat.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:aqar/view/favouriteAds.dart';
+import 'package:aqar/view/editProfile.dart';
+import 'package:aqar/view/filter.dart';
 import 'package:aqar/view/homeBody.dart';
-import 'package:aqar/view/moreBody.dart';
-import 'package:aqar/view/pleaseSignUp.dart';
-import 'package:aqar/view/pleaseSignUpBody.dart';
-import 'package:aqar/view/profileBody.dart';
-import 'package:aqar/view/searchBody.dart';
+import 'package:aqar/view/myProperties.dart';
 import 'package:aqar/view/signIn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:rich_alert/rich_alert.dart';
 import 'addAdPage.dart';
-import 'allNotificationsPage.dart';
 
 class Home extends StatefulWidget {
   int index;
+  
   Home({this.index});
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  _getCities() async {
-    searchBodyController.changebackToCities(false);
-    searchBodyController.changeloading(true);
-    List<CityModel> _city = await userController.getListOfCites(_scaffold);
 
-    if (mounted) if (_city != null && _city.length > 0)
-      setState(() {
-        searchBodyController.changeloading(false);
-        List<Marker> _markers = List.generate(
-            _city.length,
-            (index) => homeMarker(
-                cityModel: _city[index],
-                connect: true,
-                context: context,
-                hasStatus: false,
-                onPressed: () async {
-                  searchBodyController
-                      .changesearchCityIdFilter(_city[index].id);
-                  if (mounted)
-                    setState(() {
-                      searchBodyController.changeloading(true);
-                      searchBodyController.changebackToCities(true);
-                    });
-                  List ads = await homeBodyController.search(
-                      cityId: _city[index].id, sc: _scaffold);
-                  searchBodyController.changeloading(false);
-                  List<Marker> _markers = List.generate(
-                      ads[1].length,
-                      (index) => homeMarker(
-                          adModel: ads[1][index],
-                          connect: true,
-                          context: context,
-                          hasStatus: false,
-                          onPressed: () async {}));
-                  searchBodyController.changesearchedListOfAdMarkers(_markers);
-                }));
-        searchBodyController.changesearchedListOfAdMarkers(_markers);
-        searchBodyController.changebackToCities(false);
-      });
-  }
 
   initState() {
     searchBodyController.changebackToCities(false);
@@ -109,7 +68,7 @@ class _HomeState extends State<Home> {
   GlobalKey<ScaffoldState> _scaffold = GlobalKey<ScaffoldState>();
   TextEditingController _searchCTL = TextEditingController();
   int _pageIndex;
-  List<String> _titles = ["Aqar Application", "Chat"];
+  List<String> _titles = ["Aqar Application","My Properties","All Properties" ,"Chat"];
   PageController _pageController;
   @override
   Widget build(BuildContext context) {
@@ -121,7 +80,7 @@ class _HomeState extends State<Home> {
             scaffold: _scaffold,
           ),
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(_pageIndex == 0 ? 120 : 60),
+            preferredSize: Size.fromHeight(_pageIndex == 0||_pageIndex==2 ? 120 : 60),
             child: Container(
               color: Colors.blue,
               child: Column(
@@ -147,38 +106,39 @@ class _HomeState extends State<Home> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
                       ),
-                      Spacer(),
-                      NotificationsWidget()
                     ],
                   ),
-                  _pageIndex == 0
+                  _pageIndex == 0||_pageIndex==2
                       ? CustomTextFormField(
                           controller: _searchCTL,
+                          newValidate: (v){return null;},
                           onSaved: (v) async {
+                            filterController.changetitle(v.isEmpty?"":v.toString().trim());
                             searchBodyController.changeloading(true);
-                            List ads = await homeBodyController.search(
+                            List<AdModel> ads = await homeBodyController.search(
                                 cityId: searchBodyController.searchCityIdFilter,
                                 title: _searchCTL.text,
                                 sc: _scaffold);
+                                filterController.changeadsAfterFilter(ads);
                             searchBodyController.changeloading(false);
                             searchBodyController.changebackToCities(true);
                             List<Marker> _markers = List.generate(
-                                ads[1].length,
+                                ads.length,
                                 (index) => homeMarker(
-                                    adModel: ads[1][index],
+                                    adModel: ads[index],
                                     connect: true,
                                     context: context,
                                     hasStatus: false,
                                     onPressed: () async {}));
                             searchBodyController
                                 .changesearchedListOfAdMarkers(_markers);
+                                                                            searchBodyController.changemapZoom(11);
                           },
                           suffixIcon: Padding(
                             padding: EdgeInsets.only(left: 20, right: 15),
                             child: InkWell(
                               onTap: () {
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (context) => AllAdsPage()));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Filter()));
                               },
                               child: Icon(Icons.filter_list,
                                   color: Colors.blueAccent),
@@ -202,8 +162,17 @@ class _HomeState extends State<Home> {
                   case 0:
                     return HomeBody();
                     break;
+
                   case 1:
-                    return AllChats();
+                    return MyProperties(noAppBar: true,);
+                    break;
+                  case 2:
+                    return AllAdsPage(noAppBar: true,);
+                    break;
+                  case 3:
+                    return AllChats(
+                      
+                    );
                     break;
 
                   default:
@@ -212,86 +181,81 @@ class _HomeState extends State<Home> {
               }),
           floatingActionButton: FloatingActionButton(
               onPressed: () {
-                if (userController.userModel == null)
-                  showModalBottomSheet(
-                      context: context, builder: (context) => PleaseSignUp());
-                else
-                  _scaffold.currentState.showBottomSheet((context) => Container(
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                "Choose Your Advertising Type",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16),
-                              ),
+                _scaffold.currentState.showBottomSheet((context) => Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "Choose Your Advertising Type",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: RaisedButton(
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => AddAdPage(
-                                    //               type: "land",
-                                    //             )));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.pin_drop),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "Land",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                                SizedBox(
-                                  width: 20,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                  child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Land",
+                                              )));
+                                },
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.pin_drop),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Land",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(
-                                    child: RaisedButton(
-                                  onPressed: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => AddAdPage(
-                                    //               type: "Property",
-                                    //             )));
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.business),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        "Vella/Apartment",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ))
-                              ],
-                            )
-                          ],
-                        ),
-                      ));
-                // Navigator.push(context,MaterialPageRoute(builder: (context)=>AddAdPage()));
+                              )),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Expanded(
+                                  child: RaisedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Property",
+                                              )));
+                                },
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.business),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      "Villa/Apartment",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ))
+                            ],
+                          )
+                        ],
+                      ),
+                    ));
               },
               child: Container(
                   padding: EdgeInsets.all(5),
@@ -316,16 +280,34 @@ class _HomeState extends State<Home> {
                       homeController.changeSelectedBNBItem(0);
                       _pageIndex = 0;
                     });
-                    await _getCities();
                   },
                 ),
-                CustomBottomNavigationBarItem(
-                  iconData: Icons.chat,
+                  CustomBottomNavigationBarItem(
+                  iconData: Icons.assignment_ind,
                   index: 1,
                   onTap: () {
                     setState(() {
                       homeController.changeSelectedBNBItem(1);
-                      _pageIndex = 1;
+                      _pageIndex =1;
+                    });
+                  },
+                ),  CustomBottomNavigationBarItem(
+                  iconData: Icons.crop_landscape,
+                  index: 2,
+                  onTap: () {
+                    setState(() {
+                      homeController.changeSelectedBNBItem(2);
+                      _pageIndex =2;
+                    });
+                  },
+                ),
+                CustomBottomNavigationBarItem(
+                  iconData: Icons.chat,
+                  index: 3,
+                  onTap: () {
+                    setState(() {
+                      homeController.changeSelectedBNBItem(3);
+                      _pageIndex = 3;
                     });
                   },
                 ),
@@ -370,26 +352,36 @@ class CustomDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            leading: Icon(Icons.assignment_ind, color: Colors.lightBlue),
+            title: Text(
+              'My Properties',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MyProperties()));
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.crop_landscape, color: Colors.lightBlue),
             title: Text(
               'All Properties',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AllAdsPage()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AllAdsPage(
+                        title: "All Properties",
+                      )));
             },
           ),
           ListTile(
-            leading: Icon(Icons.add, color: Colors.lightBlue),
-            title: Text(
-              'New Property',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              if (userController.userModel == null)
-                showModalBottomSheet(
-                    context: context, builder: (context) => PleaseSignUp());
-              else {
+              leading: Icon(Icons.add, color: Colors.lightBlue),
+              title: Text(
+                'New Property',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              onTap: () {
                 Navigator.pop(context);
                 scaffold.currentState.showBottomSheet((context) => Container(
                       width: MediaQuery.of(context).size.width,
@@ -410,12 +402,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => AddAdPage(
-                                  //               type: "land",
-                                  //             )));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Land",
+                                              )));
                                 },
                                 child: Column(
                                   children: [
@@ -438,12 +430,12 @@ class CustomDrawer extends StatelessWidget {
                               Expanded(
                                   child: RaisedButton(
                                 onPressed: () {
-                                  // Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //         builder: (context) => AddAdPage(
-                                  //               type: "Property",
-                                  //             )));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddAdPage(
+                                                type: "Property",
+                                              )));
                                 },
                                 child: Column(
                                   children: [
@@ -452,7 +444,7 @@ class CustomDrawer extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "Vella/Apartment",
+                                      "Villa/Apartment",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
@@ -466,9 +458,7 @@ class CustomDrawer extends StatelessWidget {
                         ],
                       ),
                     ));
-              }
-            },
-          ),
+              }),
           ListTile(
             leading: Icon(Icons.person, color: Colors.lightBlue),
             title: Text(
@@ -476,20 +466,10 @@ class CustomDrawer extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             onTap: () {
-              // Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => ProfileBody()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditProfile()));
             },
           ),
-          //           ListTile(
-          //   leading: Icon(Icons.favorite, color: Colors.lightBlue),
-          //   title: Text(
-          //     'Favourite Properties',
-          //     style: TextStyle(fontWeight: FontWeight.bold),
-          //   ),
-          //   onTap: () {
-          //     Navigator.of(context).push(MaterialPageRoute(builder: (context)=>FavouriteAds()));
-          //   },
-          // ),
           ListTile(
             leading: Icon(Icons.lock_outline, color: Colors.lightBlue),
             title: Text(

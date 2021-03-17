@@ -4,7 +4,6 @@ import 'package:aqar/model/userModel.dart';
 import 'package:aqar/view/adPage.dart';
 import 'package:aqar/view/customWidgets.dart';
 import 'package:aqar/view/homeBody.dart';
-import 'package:aqar/view/rateSheet.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animations/loading_animations.dart';
 
@@ -19,7 +18,7 @@ class AdOwnerPage extends StatefulWidget {
 class _AdOwnerPageState extends State<AdOwnerPage> {
   @override
   void initState() {
-    // _getProfile();
+    _getProfile();
     super.initState();
   }
 
@@ -63,7 +62,28 @@ class _AdOwnerPageState extends State<AdOwnerPage> {
                         titleText: "Ads",
                         titleSize: 15,
                         discripWidget: Column(
-                          children:[]
+                          children: _profile == null
+                      ? [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                              child: LoadingBumpingLine.circle(),
+                            ),
+                          )
+                        ]
+                      : _profile.ads.length == 0
+                          ? [
+                              CustomText(
+                                "No ads yet",
+                                textAlign: TextAlign.center,
+                                color: appDesign.hint,
+                              )
+                            ]
+                          : List.generate(
+                              _profile.ads.length,
+                              (index) => CustomAdCard(
+                                    adModel: _profile.ads[index],
+                                  )),
                               
                         )),
                       
@@ -72,31 +92,6 @@ class _AdOwnerPageState extends State<AdOwnerPage> {
                 ),
               ),
             ),
-            userController.userModel == null
-                ? SizedBox()
-                : userController.userModel != null &&
-                        userController.userModel.id == widget.adModel.user.id
-                    ? Positioned(
-                        bottom: 0,
-                        child: SizedBox(),
-                      )
-                    : Positioned(
-                        bottom: 0,
-                        child: Container(
-                          margin: EdgeInsets.all(20),
-                          width: MediaQuery.of(context).size.width - 40,
-                          child: RaisedButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => RateSheet(
-                                        id: widget.adModel.user.id,
-                                      ));
-                            },
-                            child: Text("Rate"),
-                          ),
-                        ),
-                      )
           ],
         ),
       ),

@@ -3,7 +3,6 @@ import 'package:aqar/model/chatModel.dart';
 import 'package:aqar/model/design.dart';
 import 'package:aqar/view/chatPage.dart';
 import 'package:aqar/view/customWidgets.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:loading_animations/loading_animations.dart';
@@ -19,7 +18,7 @@ class _AllChatsState extends State<AllChats> {
   @override
   void initState() {
     
-    // _getMyChats();
+    _getMyChats();
     super.initState();
   }
 
@@ -42,53 +41,54 @@ class _AllChatsState extends State<AllChats> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // key: _sc,
-      //   appBar: buildCustomAppBar(title: "المحادثات"),
-      //   body: SmartRefresher(
-      //     controller: _refreshController,
-      //     enablePullDown: true,
-      //     onRefresh: _getMyChats,
-      //     header: BezierCircleHeader(),
-      //     footer: CustomRefreshFooter(),
-      //     child: Padding(
-      //       padding: EdgeInsets.only(top: 0, left: 20, right: 20, bottom: 20),
-      //       child: _chats == null
-      //           ? Center(child: LoadingBouncingGrid.square())
-      //           : _chats.length == 0
-      //               ? CustomText(
-      //                   "لا توجد محادثات بعد",
-      //                   size: 13,
-      //                   textAlign: TextAlign.center,
-      //                   color: appDesign.hint,
-      //                 )
-      //               : SingleChildScrollView(
-      //                 child: Column(
-      //                   children:List.generate(_chats.length, (i) => Slidable(
-      //                     child:    ChatTile(chatModel: _chats[i]),
-      //                             actionPane: SlidableDrawerActionPane(),
-      //                             actions: [
-      //                               IconButton(
-      //                                   icon: Icon(
-      //                                     Icons.delete_forever,
-      //                                     color: Colors.red,
-      //                                   ),
-      //                                   onPressed: () async {
-      //                                     await chatController.deletChatContact(
-      //                                         context, _chats[i].room);
-      //                                     if (mounted)
-      //                                       setState(() {
-      //                                         _chats.removeAt(i);
-      //                                       });
-      //                                   })
-      //                             ]),
+        key: _sc,
+        body: SmartRefresher(
+          controller: _refreshController,
+          enablePullDown: true,
+          onRefresh: _getMyChats,
+          header: BezierCircleHeader(),
+          footer: CustomRefreshFooter(),
+          child: Padding(
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
+            child: _chats == null
+                ? Center(child: LoadingBouncingGrid.square())
+                : _chats.length == 0
+                    ? CustomText(
+                        "No Chats Yet",
+                        size: 13,
+                        textAlign: TextAlign.center,
+                        color: appDesign.hint,
+                      )
+                    : SingleChildScrollView(
+                      child: Column(
+                        children:List.generate(_chats.length, (i) => Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Slidable(
+                            child:    ChatTile(chatModel: _chats[_chats.length-(i+1)]),
+                                    actionPane: SlidableDrawerActionPane(),
+                                    actions: [
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () async {
+                                            await chatController.deletChatContact(
+                                                context, _chats[_chats.length-(i+1)].room);
+                                            if (mounted)
+                                              setState(() {
+                                                _chats.removeAt(_chats.length-(i+1));
+                                              });
+                                          })
+                                    ]),
+                        ),
                                 
-      //                   )
+                        )
                       
-      //                 ),
-      //               ),
-      //     ),
-      //   )
-        );
+                      ),
+                    ),
+          ),
+        ));
   }
 }
 
@@ -122,8 +122,7 @@ class ChatTile extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                child: ExtendedImage(
-                  enableLoadState: true,
+                child: Image(
                   image: NetworkImage(
                     chatModel.image,
                   ),
